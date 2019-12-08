@@ -1,14 +1,16 @@
 <template>
     <div class="hello">
         <el-divider
-            >当前数据库：法拉第
-            <el-button round size="mini">打开新数据库</el-button></el-divider
+            >当前数据库：{{ dbNameText }}
+            <el-button round size="mini" @click="showDbList = true"
+                >打开新数据库</el-button
+            ></el-divider
         >
-        <el-row :gutter="40">
+        <el-row :gutter="40" v-if="dbName != '' && tables.length > 0">
             <el-col :span="7">
                 <el-card style="background: rgb(244, 244, 245);">
                     <div v-for="(t, i) in tables" :key="i">
-                        {{ t.tables_in_faraday }}
+                        {{ t }}
                     </div>
                 </el-card>
             </el-col>
@@ -63,6 +65,14 @@
                 </el-row>
             </el-col>
         </el-row>
+        <el-dialog :visible.sync="showDbList" width="50%" :show-close="false">
+            <p v-for="(v, k, i) in DbList" :key="i">
+                {{ v
+                }}<el-button type="danger" size="mini" @click="openDb(k, v)"
+                    >打开</el-button
+                >
+            </p>
+        </el-dialog>
     </div>
 </template>
 
@@ -78,22 +88,66 @@ export default {
             sqlList: [],
             tableData: [],
             database: [],
-            tables: []
+            tables: [],
+            dbName: "",
+            dbNameText: "",
+            DbList: {},
+            showDbList: false
         };
     },
     mounted() {
-        this.getTables();
+        let p = this.GetQueryString("db_name");
+        if (p != null) {
+            this.dbName = p;
+        }
+        this.initDBList();
     },
     methods: {
+        GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        },
+        async initDBList() {
+            let res = await this.$api.getDBList();
+            this.DbList = res;
+
+            if (res[this.dbName] != undefined) {
+                this.dbNameText = this.DbList[this.dbName];
+                this.getTables();
+            } else if (Object.keys(res).length == 1) {
+                this.dbName = Object.keys(res)[0];
+                this.dbNameText = res[this.dbName];
+                this.getTables();
+            } else {
+                this.showDbList = true;
+            }
+        },
         async getTables() {
-            let res = await this.$api.getSqlData("show tables");
-            this.tables = res;
+            let res = await this.$api.getSqlData(this.dbName, "show tables");
+            let tableList = [];
+            res.forEach(element => {
+                let i = Object.keys(element)[0];
+                tableList.push(element[i]);
+            });
+            this.tables = tableList;
         },
         async getSqlData() {
             this.sqlList.push(this.sql);
-            let res = await this.$api.getSqlData(this.sql);
+            let res = await this.$api.getSqlData(this.dbName, this.sql);
 
             this.tableData = res;
+        },
+        openDb(d, dt) {
+            if (this.dbName == "") {
+                this.dbName = d;
+                this.dbNameText = dt;
+                this.getTables();
+                this.showDbList = false;
+            } else {
+                window.open("/?db_name=" + d, "_blank");
+            }
         }
     }
 };

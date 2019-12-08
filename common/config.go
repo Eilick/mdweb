@@ -33,6 +33,7 @@ type mysqlSection struct {
 	User string
 	Pswd string
 	Db   string
+	Name string
 }
 
 func GetConfigInstance() *Config {

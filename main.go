@@ -25,7 +25,6 @@ func Cors() gin.HandlerFunc {
 func main() {
 
 	cfg := common.GetConfigInstance()
-	fmt.Println(cfg)
 	database.DbSetUp(cfg)
 
 	router := gin.New()
@@ -34,7 +33,8 @@ func main() {
 
 	gin.SetMode(gin.DebugMode)
 
-	router.POST("/tool/mysql", ExcuteSql)
+	router.POST("/sql", ExcuteSql)
+	router.GET("/db_list", getDbList)
 	router.GET("/test", Test)
 
 	router.Run(cfg.Main.Host)
@@ -42,22 +42,37 @@ func main() {
 }
 
 type SqlReq struct {
-	Sql string `json:"sql"`
+	Sql    string `json:"sql"`
+	DbName string `json:"db_name"`
 }
 
 func Test(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, map[string]interface{}{})
 }
+
 func ExcuteSql(ctx *gin.Context) {
 
 	var sqlreq SqlReq
 	err := ctx.BindJSON(&sqlreq)
+	fmt.Println(sqlreq)
 
 	if err != nil {
 		ctx.JSON(http.StatusOK, map[string]interface{}{})
 		return
 	}
 
-	d := database.GetSqlExcute(sqlreq.Sql)
+	d := database.GetSqlExcute(sqlreq.DbName, sqlreq.Sql)
 	ctx.JSON(http.StatusOK, d)
+}
+
+func getDbList(ctx *gin.Context) {
+
+	cfg := common.GetConfigInstance()
+
+	list := make(map[string]string)
+	for n, item := range cfg.Mysql {
+		list[n] = item.Name
+	}
+
+	ctx.JSON(http.StatusOK, list)
 }

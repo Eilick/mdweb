@@ -11,22 +11,24 @@ import (
 
 const PAGE_SIZE = 20
 
-var DbConn *sql.DB
+var DbConn map[string]*sql.DB
 var once sync.Once
 
 func DbSetUp(cfg *common.Config) {
 	once.Do(func() {
-		msCf := cfg.Mysql["1"]
-		dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=false&loc=Local", msCf.User,
-			msCf.Pswd, msCf.Host, msCf.Db)
-		conn, err := sql.Open("mysql", dsn)
-		fmt.Println(dsn, err, conn)
-		if err != nil {
-			panic("连接Faraday数据库失败:" + err.Error())
+		DbConn = make(map[string]*sql.DB)
+		for k, c := range cfg.Mysql {
+			dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=false&loc=Local", c.User, c.Pswd, c.Host, c.Db)
+			conn, err := sql.Open("mysql", dsn)
+
+			if err != nil {
+				panic(fmt.Sprint("连接数据库%s失败，错误原因", c.Name, err.Error()))
+			}
+			conn.SetMaxIdleConns(10)
+			conn.SetMaxOpenConns(100)
+			DbConn[k] = conn
 		}
-		conn.SetMaxIdleConns(10)
-		conn.SetMaxOpenConns(100)
-		DbConn = conn
+
 	})
 
 	fmt.Println(DbConn)

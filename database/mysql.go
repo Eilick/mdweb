@@ -2,13 +2,17 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
 	"strings"
 )
 
-func GetSqlExcute(sqlStr string) []map[string]interface{} {
+func GetSqlExcute(dbName, sqlStr string) []map[string]interface{} {
 
-	rows, _ := DbConn.Query(sqlStr)
+	if _, ok := DbConn[dbName]; !ok {
+		return []map[string]interface{}{}
+	}
+	dbConn := DbConn[dbName]
+
+	rows, _ := dbConn.Query(sqlStr)
 
 	columns, err := rows.Columns()
 	if err != nil {
@@ -21,7 +25,6 @@ func GetSqlExcute(sqlStr string) []map[string]interface{} {
 	for i := range values {
 		scanArgs[i] = &values[i]
 	}
-	fmt.Println(scanArgs)
 
 	list := []map[string]interface{}{}
 
