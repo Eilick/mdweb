@@ -14,11 +14,13 @@
             </el-col>
             <el-col :span="17">
                 <el-row style="margin:20px 0;" class="tag-group">
-                    <template v-for="(s, i) in sqlList">
-                        <el-tag v-if="s != ''" :key="i">
-                            {{ s }}
-                        </el-tag>
-                    </template>
+                    <el-card style="height:100px;overflow:scroll">
+                        <template v-for="(s, i) in sqlList">
+                            <p v-if="s != ''" :key="i">
+                                {{ s }}
+                            </p>
+                        </template>
+                    </el-card>
                 </el-row>
                 <el-row>
                     <el-input
@@ -27,6 +29,7 @@
                         placeholder="请输入内容"
                         v-model="sql"
                         :autosize="{ minRows: 4, maxRows: 20 }"
+                        @keyup.enter="getSqlData"
                     >
                     </el-input>
                 </el-row>
@@ -39,14 +42,22 @@
                 <el-row :gutter="10">
                     <template v-for="(row, i) in tableData">
                         <el-card :key="i" style="margin-bottom:10px">
-                            <template v-for="(val, key, j) in row">
-                                <div :key="j">
-                                    <strong style="color:red"
-                                        >{{ key }}：</strong
-                                    >
-                                    {{ val }}
-                                </div>
-                            </template>
+                            <el-form
+                                :label-position="'right'"
+                                label-width="250px"
+                            >
+                                <template v-for="(val, key, j) in row">
+                                    <el-form-item :key="j" style="margin:0px;">
+                                        <div slot="label">
+                                            <strong
+                                                style="font-size:17px;color:red;"
+                                                >{{ key }}:</strong
+                                            >
+                                        </div>
+                                        <span class="lg-p">{{ val }}</span>
+                                    </el-form-item>
+                                </template>
+                            </el-form>
                         </el-card>
                     </template>
                 </el-row>
@@ -79,6 +90,7 @@ export default {
             this.tables = res;
         },
         async getSqlData() {
+            this.sqlList.push(this.sql);
             let res = await this.$api.getSqlData(this.sql);
 
             this.tableData = res;
@@ -86,3 +98,10 @@ export default {
     }
 };
 </script>
+<style scoped>
+.lg-p {
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: hidden;
+}
+</style>
