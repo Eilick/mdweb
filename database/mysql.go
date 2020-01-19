@@ -2,11 +2,13 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"strings"
 )
 
 func GetSqlExcute(dbName, sqlStr string) []map[string]interface{} {
 
+	fmt.Println(dbName)
 	if _, ok := DbConn[dbName]; !ok {
 		return []map[string]interface{}{}
 	}
@@ -48,6 +50,5 @@ func GetSqlExcute(dbName, sqlStr string) []map[string]interface{} {
 		}
 		list = append(list, data)
 	}
-
 	return list
 }

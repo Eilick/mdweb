@@ -1,37 +1,35 @@
 <template>
-    <el-row >
-        <el-col :span="17">
-            <el-row>
-                <el-input
-                    type="textarea"
-                    :rows="4"
-                    placeholder="请输入内容"
-                    v-model="sql"
-                    :autosize="{ minRows: 4, maxRows: 20 }"
-                    @keyup.enter="getSqlData"
-                ></el-input>
-            </el-row>
+    <el-row>
+        <el-row>
+            <el-input
+                type="textarea"
+                :rows="4"
+                placeholder="请输入内容"
+                v-model="sql"
+                :autosize="{ minRows: 4, maxRows: 20 }"
+                @keyup.enter="getSqlData"
+            ></el-input>
+        </el-row>
 
-            <el-row style="margin:20px 0;">
-                <el-button type="primary" @click="getSqlData">执行</el-button>
-            </el-row>
-            <el-row :gutter="10">
-                <template v-for="(row, i) in tableData">
-                    <el-card :key="i" style="margin-bottom:10px">
-                        <el-form :label-position="'right'" label-width="250px">
-                            <template v-for="(val, key, j) in row">
-                                <el-form-item :key="j" style="margin:0px;">
-                                    <div slot="label">
-                                        <strong style="font-size:17px;color:red;">{{ key }}:</strong>
-                                    </div>
-                                    <span class="lg-p">{{ val }}</span>
-                                </el-form-item>
-                            </template>
-                        </el-form>
-                    </el-card>
-                </template>
-            </el-row>
-        </el-col>
+        <el-row style="margin:20px 0;">
+            <el-button type="primary" @click="getSqlData">执行</el-button>
+        </el-row>
+        <el-row :gutter="10">
+            <template v-for="(row, i) in tableData">
+                <el-card :key="i" style="margin-bottom:10px">
+                    <el-form :label-position="'right'" label-width="250px">
+                        <template v-for="(val, key, j) in row">
+                            <el-form-item :key="j" style="margin:0px;">
+                                <div slot="label">
+                                    <strong style="font-size:17px;color:red;">{{ key }}:</strong>
+                                </div>
+                                <span class="lg-p">{{ val }}</span>
+                            </el-form-item>
+                        </template>
+                    </el-form>
+                </el-card>
+            </template>
+        </el-row>
     </el-row>
 </template>
 

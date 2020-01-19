@@ -9,7 +9,7 @@
                     <slidemenu
                     ></slidemenu>
                 </el-aside>
-                <el-main style="margin-bottom: 200px;">sgsgg</el-main>
+                <el-main style="margin-bottom: 200px;"><SearchBox /></el-main>
             </el-container>
         </el-container>
     </el-row>
@@ -18,6 +18,7 @@
 //components
 import myheader from "@/components/EleHeader";
 import slideMenu from "@/components/SlideMenu";
+import SearchBox from "@/mysql/SearchBox";
 
 import moment from "moment";
 
@@ -26,14 +27,15 @@ export default {
     data() {
         return {
             close: "64px",
-            open: "210px",
+            open: "300px",
             headerHeight: "60px",
             showSlideMenu: true,
         };
     },
     components: {
         myheader: myheader,
-        slidemenu: slideMenu
+        slidemenu: slideMenu,
+        SearchBox
     },
     methods: {
     }

@@ -2,15 +2,15 @@
     <div class="middle">
         <el-menu
             class="el-menu-vertical-demo"
-            :collapse="isCollapse"
+            :collapse="false"
             background-color="#323f49"
             text-color="#fff"
             active-text-color="#e6a23c"
         >
-        <template v-for="idx in 30">
-            <el-menu-item :index="idx">
+        <template v-for="(t,idx) in tables">
+            <el-menu-item :index="idx" :key="idx">
                 <i class="el-icon-menu"></i>
-                <span slot="title">导航二</span>
+                <span slot="title">{{t}}</span>
             </el-menu-item>
         </template>
         </el-menu>
@@ -18,7 +18,7 @@
 </template>
 <style scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 210px;
+    width: 300px;
     min-height: 100%;
 }
 .middle {
@@ -43,7 +43,7 @@ export default {
     },
     methods: {
         async getTableList() {
-            let res = await this.$api.getSqlData(this.dbName, "show tables");
+            let res = await this.$api.getSqlData('faraday', "show tables");
             let tableList = [];
             res.forEach(element => {
                 let i = Object.keys(element)[0];
@@ -53,7 +53,7 @@ export default {
         },
     },
     mounted() {
-        this.getTableList
+        this.getTableList()
     }
 };
 </script>

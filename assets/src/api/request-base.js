@@ -7,8 +7,10 @@ function getRequestUrl(config) {
         return config.url;
     }
 
+    return `//127.0.0.1:8888${config.url}`;
+
     if(process.env.NODE_ENV == 'development') {
-      //return `//127.0.0.1:8888${config.url}`;
+      return `//127.0.0.1:8888${config.url}`;
         //return `//${config.host.dev}${config.url}`;
     }
 
@@ -19,7 +21,7 @@ function getRequestUrl(config) {
 axios.interceptors.request.use(config => {
 
   config.timeout = 120 * 1000;
-  //config.url = getRequestUrl(config); 
+  config.url = getRequestUrl(config); 
 
   return config;
 
