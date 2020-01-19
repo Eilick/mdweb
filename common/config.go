@@ -38,7 +38,7 @@ type mysqlSection struct {
 
 func GetConfigInstance() *Config {
 	cfgOnce.Do(func() {
-		cfile := flag.String("c", "./conf/faraday.toml", "config file")
+		cfile := flag.String("c", "./conf/mysql.toml", "config file")
 		flag.Parse()
 		if _, err := toml.DecodeFile(*cfile, &cfgInstance); err != nil {
 			panic(err)
