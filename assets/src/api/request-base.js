@@ -8,7 +8,7 @@ function getRequestUrl(config) {
     }
 
     if(process.env.NODE_ENV == 'development') {
-      return `//127.0.0.1:8888${config.url}`;
+      //return `//127.0.0.1:8888${config.url}`;
         //return `//${config.host.dev}${config.url}`;
     }
 
