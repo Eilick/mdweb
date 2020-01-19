@@ -12,9 +12,9 @@
         </el-row>
 
         <el-row style="margin:20px 0;">
-            <el-button type="primary" @click="getSqlData">执行</el-button>
+            <el-button type="primary" @click="getSqlData" style="float:right">执行</el-button>
         </el-row>
-        <el-row :gutter="10">
+        <el-row :gutter="10" id="table-id">
             <template v-for="(row, i) in tableData">
                 <el-card :key="i" style="margin-bottom:10px">
                     <el-form :label-position="'right'" label-width="250px">
@@ -43,66 +43,26 @@ export default {
         return {
             sql: "select * from faraday_exp_zone",
             sqlList: [],
-            tableData: [],
-            database: [],
-            tables: [],
-            dbName: "",
-            dbNameText: "",
-            DbList: {},
-            showDbList: false
+            tableData: []
         };
     },
-    mounted() {
-        let p = this.GetQueryString("db_name");
-        if (p != null) {
-            this.dbName = p;
-        }
-        this.initDBList();
-    },
     methods: {
-        GetQueryString(name) {
-            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-            var r = window.location.search.substr(1).match(reg);
-            if (r != null) return unescape(r[2]);
-            return null;
-        },
-        async initDBList() {
-            let res = await this.$api.getDBList();
-            this.DbList = res;
-            if (res[this.dbName] != undefined) {
-                this.dbNameText = this.DbList[this.dbName];
-                this.getTables();
-            } else if (Object.keys(res).length == 1) {
-                this.dbName = Object.keys(res)[0];
-                this.dbNameText = res[this.dbName];
-                this.getTables();
-            } else {
-                this.showDbList = true;
-            }
-        },
-        async getTables() {
-            let res = await this.$api.getSqlData(this.dbName, "show tables");
-            let tableList = [];
-            res.forEach(element => {
-                let i = Object.keys(element)[0];
-                tableList.push(element[i]);
-            });
-            this.tables = tableList;
+        setSelectSql(sqlStr) {
+            this.sql = sqlStr;
+            this.getSqlData();
         },
         async getSqlData() {
-            this.sqlList.push(this.sql);
-            let res = await this.$api.getSqlData(this.dbName, this.sql);
+            const l = this.$loading({
+                lock: true,
+                target : "#table-id",
+                fullscreen :false,
+                text: "查询中",
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+            });
+            let res = await this.$api.getSqlData("faraday", this.sql);
+            l.close();
             this.tableData = res;
-        },
-        openDb(d, dt) {
-            if (this.dbName == "") {
-                this.dbName = d;
-                this.dbNameText = dt;
-                this.getTables();
-                this.showDbList = false;
-            } else {
-                window.open("/?db_name=" + d, "_blank");
-            }
         }
     }
 };

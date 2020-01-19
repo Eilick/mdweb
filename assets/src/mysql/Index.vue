@@ -6,10 +6,11 @@
             </el-header>
             <el-container>
                 <el-aside :width="showSlideMenu ? open : close">
-                    <slidemenu
-                    ></slidemenu>
+                    <slidemenu @setSelectSql="setSelectSql"></slidemenu>
                 </el-aside>
-                <el-main style="margin-bottom: 200px;"><SearchBox /></el-main>
+                <el-main style="margin-bottom: 200px;">
+                    <SearchBox ref="SearchBox"/>
+                </el-main>
             </el-container>
         </el-container>
     </el-row>
@@ -29,7 +30,7 @@ export default {
             close: "64px",
             open: "300px",
             headerHeight: "60px",
-            showSlideMenu: true,
+            showSlideMenu: true
         };
     },
     components: {
@@ -38,6 +39,10 @@ export default {
         SearchBox
     },
     methods: {
+        setSelectSql(t) {
+            let sql = `select * from ${t} limit 10;`
+            this.$refs.SearchBox.setSelectSql(sql)
+        }
     }
 };
 </script>

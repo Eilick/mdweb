@@ -8,7 +8,7 @@
             active-text-color="#e6a23c"
         >
         <template v-for="(t,idx) in tables">
-            <el-menu-item :index="idx" :key="idx">
+            <el-menu-item :index="idx + ''" :key="idx" @click="setSelectTab(t)">
                 <i class="el-icon-menu"></i>
                 <span slot="title">{{t}}</span>
             </el-menu-item>
@@ -51,6 +51,9 @@ export default {
             });
             this.tables = tableList;
         },
+        setSelectTab(t) {
+            this.$emit("setSelectSql", t)
+        }
     },
     mounted() {
         this.getTableList()
