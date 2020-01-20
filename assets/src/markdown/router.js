@@ -2,6 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import CreateMd from '@/markdown/Create'
+import UpdateMd from '@/markdown/Edit'
+
+import MdDetail from '@/markdown/Detail'
 
 Vue.use(Router)
 
@@ -16,6 +19,16 @@ const router = new Router({
             path: '/markdown/create',
             name: 'CreateMd',
             component: CreateMd,
+        },
+        {
+            path: '/markdown/edit/:id',
+            name: 'UpdateMd',
+            component: UpdateMd,
+        },
+        {
+            path: '/markdown/detail/:id',
+            name: 'MdDetail',
+            component: MdDetail,
         },
     ]
 })

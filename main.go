@@ -37,6 +37,10 @@ func main() {
 	router.GET("/db_list", getDbList)
 	router.GET("/test", Test)
 	router.POST("/markdown/create", CreateMd)
+	router.POST("/markdown/update", UpdateMd)
+	router.POST("/markdown/delete", DeleteMd)
+	router.GET("/markdown/list", MdList)
+	router.GET("/markdown/detail", SingleMd)
 
 	router.Run(cfg.Main.Host)
 
@@ -79,6 +83,7 @@ func getDbList(ctx *gin.Context) {
 }
 
 type Markdown struct {
+	Id      string `json:"id"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
 }
@@ -107,5 +112,75 @@ func CreateMd(ctx *gin.Context) {
 		"code": 0,
 		"id":   id,
 	})
+
+}
+
+func UpdateMd(ctx *gin.Context) {
+	var md Markdown
+	if err := ctx.BindJSON(&md); err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	id, err := database.UpdateMd(md.Id, md.Title, md.Content)
+
+	if err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"code": 0,
+		"id":   id,
+	})
+
+}
+
+func DeleteMd(ctx *gin.Context) {
+	var md Markdown
+	if err := ctx.BindJSON(&md); err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	id, err := database.DeleteMd(md.Id)
+
+	if err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"code": 0,
+		"id":   id,
+	})
+
+}
+
+func MdList(ctx *gin.Context) {
+
+	list := database.ArticleList()
+
+	ctx.JSON(http.StatusOK, list)
+
+}
+
+func SingleMd(ctx *gin.Context) {
+
+	d := database.SingleArticle(ctx.DefaultQuery("id", "0"))
+
+	ctx.JSON(http.StatusOK, d)
 
 }

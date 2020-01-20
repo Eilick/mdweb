@@ -7,18 +7,18 @@
             text-color="#fff"
             active-text-color="#e6a23c"
         >
-            <el-menu-item index="1" @click="jumpTo('/markdown/create')">
-                <i class="el-icon-menu"></i>
-                <span slot="title">
-                    创建
-                </span>
-            </el-menu-item>
+            <template v-for="(item, idx) in mdList">
+                <el-menu-item :index="idx + ''" :key="idx + ''" @click="jumpMd(item.id)">
+                    <i class="el-icon-menu"></i>
+                    <span slot="title">{{item.title}}</span>
+                </el-menu-item>
+            </template>
         </el-menu>
     </div>
 </template>
 <style scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 300px;
+    width: 250px;
     min-height: 100%;
 }
 .middle {
@@ -34,9 +34,21 @@
 </style>
 <script>
 export default {
-    methods : {
-        jumpTo(p) {
-            this.$router.push(p)
+    data() {
+        return {
+            mdList: []
+        };
+    },
+    mounted() {
+        //this.getMdList();
+    },
+    methods: {
+        async getMdList() {
+            let res = await this.$api.getMdList();
+            this.mdList = res;
+        },
+        jumpMd(id) {
+            this.$router.push("/markdown/detail/" + id)
         }
     }
 };

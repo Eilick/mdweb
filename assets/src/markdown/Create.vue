@@ -35,7 +35,6 @@
                 this.mdtext = t;
             },
             async createArticle() {
-                console.log(this.title, this.mdtext)
                 let res = await this.$api.createMd(this.title, this.mdtext);
                 alert('创建成功')
             }
