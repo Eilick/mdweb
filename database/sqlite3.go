@@ -16,14 +16,14 @@ func AddArticle(title, content string) (int64, error) {
 		panic(err)
 	}
 
-	stmt, err := tmpDb.Prepare("INSERT INTO markdown(title, content, create_at, update_at) values(?, ?, ?, ?)")
+	stmt, err := tmpDb.Prepare("INSERT INTO markdown(title, content, show_status, create_at, update_at) values(?, ?, ?, ?, ?)")
 
 	if err != nil {
 		return 0, err
 	}
 
 	nowTime := common.GetNowDateTimeString()
-	res, err := stmt.Exec(title, content, nowTime, nowTime)
+	res, err := stmt.Exec(title, content, 0, nowTime, nowTime)
 	stmt.Close()
 	tmpDb.Close()
 	if err != nil {

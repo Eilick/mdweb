@@ -1,62 +1,61 @@
 <template>
-    <div>
-        <div class="row" >
-            <div class="col-md-6 col-md-offset-3">
-                <div class="text-center">
-                    <input type="text" class="form-control input-lg" placeholder="文章标题" v-model="title">
-                </div>
-            </div>
-        </div>
-        <div class="row" style="margin-top: 20px;">
-            <div class="col-md-10 col-md-offset-1">
-                <markdown-editor @inputMarkdown="setMdText" :initValue="mdtext"/>
-            </div>
-        </div>
+    <el-row>
+        <el-row>
+            <el-input v-model="title" placeholder="请输入内容"></el-input>
+        </el-row>
+        <el-divider></el-divider>
+        <el-row style="margin-top: 20px;">
+            <markdown-editor @inputMarkdown="setMdText" :initValue="mdtext" />
+        </el-row>
 
-        <div class="row" style="padding-top: 30px; padding-bottom: 30px;">
-            <div class="text-center">
-                <button type="button" class="btn btn-primary btn-lg" @click="updateArticle">修改</button>
-                <button type="button" class="btn btn-danger btn-lg" @click="deleteArticle">删除</button>
-            </div>
-        </div>
-    </div>
+        <el-row style="margin-top:30px;">
+            <el-col align="center">
+                <el-button
+                    type="warning"
+                    size="large"
+                    @click="updateArticle"
+                    style="margin-right:20px;"
+                >修改</el-button>
+            </el-col>
+        </el-row>
+    </el-row>
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                id : "",
-                mdtext : '',
-                title : '',
+export default {
+    data() {
+        return {
+            id: "",
+            mdtext: "",
+            title: ""
+        };
+    },
+    mounted() {
+        this.id = this.$route.params["id"];
+        this.getArticleDetail();
+    },
+    methods: {
+        setMdText(t) {
+            this.mdtext = t;
+        },
+        async getArticleDetail() {
+            let res = await this.$api.getMdDetail(this.id);
+            this.mdtext = res.content;
+            this.title = res.title;
+        },
+        async updateArticle() {
+            let res = await this.$api.updateMd(
+                this.id,
+                this.title,
+                this.mdtext
+            );
+            if (res.code ==0) {
+                this.$message("修改成功")
+               this.$router.push("/markdown/detail/" + this.id);
+            } else {
+                this.$message(res.message)
             }
         },
-        mounted() {
-            this.id = this.$route.params["id"]
-            this.getArticleDetail();
-        },
-        methods : {
-            setMdText(t) {
-                this.mdtext = t;
-            },
-            async getArticleDetail() {
-                let res = await this.$api.getMdDetail(this.id);
-                this.mdtext = res.content;
-                this.title = res.title;
-            },
-            async updateArticle() {
-                let res = await this.$api.updateMd(this.id, this.title, this.mdtext);
-                alert('更新成功');
-            },
-            async deleteArticle() {
-
-                if(!confirm('删除该文章')) {
-                    return;
-                }
-                let res = await this.$api.deleteMd(this.articleId);
-                alert('删除成功')
-                window.location.href='/page/article/list';
-            }
-        }
     }
+};
 </script>

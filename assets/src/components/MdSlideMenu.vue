@@ -8,7 +8,7 @@
             active-text-color="#e6a23c"
         >
             <template v-for="(item, idx) in mdList">
-                <el-menu-item :index="idx + ''" :key="idx + ''" @click="jumpMd(item.id)">
+                <el-menu-item :index="idx + ''" :key="idx + ''" :route="{path:'/markdown/detail/' + item.id}" @click="jumpMd(item.id)">
                     <i class="el-icon-menu"></i>
                     <span slot="title">{{item.title}}</span>
                 </el-menu-item>
@@ -48,7 +48,27 @@ export default {
             this.mdList = res;
         },
         jumpMd(id) {
-            this.$router.push("/markdown/detail/" + id)
+            this.$router.push("/markdown/detail/" + id);
+        },
+        afterDelete(id) {
+            let theIndex = 0;
+            this.mdList.forEach((obj, index) => {
+                if (id == obj.id) {
+                    theIndex = index;
+                }
+            });
+            if (theIndex == this.mdList.length - 1) {
+                this.getMdList();
+                setTimeout(() => {
+                    this.jumpMd(this.mdList[this.mdList.length - 1].id);
+                }, 100);
+            } else {
+                this.getMdList();
+                alert(theIndex);
+                setTimeout(() => {
+                    this.jumpMd(this.mdList[theIndex].id);
+                }, 100);
+            }
         }
     }
 };

@@ -1,43 +1,49 @@
 <template>
     <el-row>
-        <div class="row" >
-            <div class="col-md-6 col-md-offset-3">
-                <div class="text-center">
-                    <input type="text" class="form-control input-lg" placeholder="文章标题" v-model="title">
-                </div>
-            </div>
-        </div>
-        <div class="row text-center" style="margin-top: 20px;">
-            <div class="col-md-10 col-md-offset-1">
-                <markdown-editor @inputMarkdown="setMdText"/>
-            </div>
-        </div>
+        <el-row>
+            <el-input v-model="title" placeholder="请输入内容"></el-input>
+        </el-row>
+        <el-divider></el-divider>
 
-        <div class="row" style="padding-top: 30px; padding-bottom: 30px;">
-            <div class="text-center">
-                <button type="button" class="btn btn-primary btn-lg" @click="createArticle">创建</button>
-            </div>
-        </div>
+        <el-row style="margin-top: 20px;">
+            <markdown-editor @inputMarkdown="setMdText" />
+        </el-row>
+
+        <el-row style="margin-top:30px;">
+            <el-col align="center">
+                <el-button
+                    type="warning"
+                    size="large"
+                    @click="createArticle"
+                    style="margin-right:20px;"
+                >创建</el-button>
+            </el-col>
+        </el-row>
     </el-row>
 </template>
 
 <script>
-    export default {
-        props : ['articleId'],
-        data() {
-            return {
-                mdtext : '',
-                title : '',
-            }
+export default {
+    props: ["articleId"],
+    data() {
+        return {
+            mdtext: "",
+            title: ""
+        };
+    },
+    methods: {
+        setMdText(t) {
+            this.mdtext = t;
         },
-        methods : {
-            setMdText(t) {
-                this.mdtext = t;
-            },
-            async createArticle() {
-                let res = await this.$api.createMd(this.title, this.mdtext);
-                alert('创建成功')
+        async createArticle() {
+            let res = await this.$api.createMd(this.title, this.mdtext);
+            if(res.code == 0) {
+                this.$message("创建成功")
+                this.$router.push("/markdown/detail/" + res.id);
+            } else {
+                 this.$message(res.message)
             }
         }
     }
+};
 </script>
