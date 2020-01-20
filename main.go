@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"mysql-client/common"
 	"mysql-client/database"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Cors() gin.HandlerFunc {
@@ -23,7 +24,6 @@ func Cors() gin.HandlerFunc {
 	}
 }
 func main() {
-
 	cfg := common.GetConfigInstance()
 	database.DbSetUp(cfg)
 
@@ -36,6 +36,7 @@ func main() {
 	router.POST("/sql", ExcuteSql)
 	router.GET("/db_list", getDbList)
 	router.GET("/test", Test)
+	router.POST("/markdown/create", CreateMd)
 
 	router.Run(cfg.Main.Host)
 
@@ -75,4 +76,36 @@ func getDbList(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, list)
+}
+
+type Markdown struct {
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
+
+func CreateMd(ctx *gin.Context) {
+	var md Markdown
+	if err := ctx.BindJSON(&md); err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	id, err := database.AddArticle(md.Title, md.Content)
+
+	if err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"code": 0,
+		"id":   id,
+	})
+
 }

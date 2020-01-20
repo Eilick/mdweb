@@ -10,4 +10,9 @@ export default {
     getDBList: () => {
         return request('get', '/db_list')
     },
+    createMd: (title, content) => {
+        return request('post', '/markdown/create', {
+            title, content
+        })
+    },
 }
