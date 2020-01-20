@@ -33,4 +33,9 @@ export default {
             id
         })
     },
+    uploadImage : (file) => {
+		var formdata = new FormData();
+        formdata.append('file', file);
+		return request('post', '/markdown/upload_image', formdata)
+	},
 }

@@ -51,6 +51,8 @@ export default {
         talk2SlieMenu(action, obj) {
             if(action == "delete") {
                 this.$refs.Slide.afterDelete(obj)
+            } else if(action == "create") {
+                this.$refs.Slide.getMdList(obj)
             }
         }
 

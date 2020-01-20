@@ -40,6 +40,7 @@ export default {
             if(res.code == 0) {
                 this.$message("创建成功")
                 this.$router.push("/markdown/detail/" + res.id);
+                window.location.reload()
             } else {
                  this.$message(res.message)
             }

@@ -6,6 +6,7 @@
             background-color="#323f49"
             text-color="#fff"
             active-text-color="#e6a23c"
+            :default-active="defaultActive"
         >
             <template v-for="(item, idx) in mdList">
                 <el-menu-item :index="idx + ''" :key="idx + ''" :route="{path:'/markdown/detail/' + item.id}" @click="jumpMd(item.id)">
@@ -42,6 +43,17 @@ export default {
     mounted() {
         //this.getMdList();
     },
+    computed : {
+        defaultActive : function() {
+            let theIndex = 0;
+            this.mdList.forEach((obj, index) => {
+                if (this.$route.params.id == obj.id) {
+                    theIndex = index;
+                }
+            });
+            return theIndex
+        }
+    },
     methods: {
         async getMdList() {
             let res = await this.$api.getMdList();
@@ -64,7 +76,6 @@ export default {
                 }, 100);
             } else {
                 this.getMdList();
-                alert(theIndex);
                 setTimeout(() => {
                     this.jumpMd(this.mdList[theIndex].id);
                 }, 100);

@@ -49,13 +49,14 @@ export default {
                 this.title,
                 this.mdtext
             );
-            if (res.code ==0) {
-                this.$message("修改成功")
-               this.$router.push("/markdown/detail/" + this.id);
+            if (res.code == 0) {
+                this.$message("修改成功");
+                this.$router.push("/markdown/detail/" + this.id);
+                window.location.reload();
             } else {
-                this.$message(res.message)
+                this.$message(res.message);
             }
-        },
+        }
     }
 };
 </script>

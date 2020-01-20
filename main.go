@@ -5,6 +5,7 @@ import (
 	"mysql-client/common"
 	"mysql-client/database"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,9 +34,12 @@ func main() {
 
 	gin.SetMode(gin.DebugMode)
 
+	router.StaticFS("/image", http.Dir("./image"))
+
 	router.POST("/sql", ExcuteSql)
 	router.GET("/db_list", getDbList)
 	router.GET("/test", Test)
+	router.POST("/markdown/upload_image", uploadImage)
 	router.POST("/markdown/create", CreateMd)
 	router.POST("/markdown/update", UpdateMd)
 	router.POST("/markdown/delete", DeleteMd)
@@ -183,4 +187,33 @@ func SingleMd(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, d)
 
+}
+
+func uploadImage(ctx *gin.Context) {
+	header, err := ctx.FormFile("file")
+	if err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	dst := header.Filename
+	l := strings.Split(dst, ".")
+	md5Name := common.Md5Crypt([]byte(dst + common.GetNowDateTimeString()))
+	fullPath := fmt.Sprintf("./image/%s.%s", md5Name, l[1])
+
+	if err := ctx.SaveUploadedFile(header, fullPath); err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"code": 0,
+		"file": fmt.Sprintf("%s.%s", md5Name, l[1]),
+	})
+	return
 }

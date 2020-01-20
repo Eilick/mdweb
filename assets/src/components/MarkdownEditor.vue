@@ -59,9 +59,11 @@ export default {
     },
     methods : {
         async imgAdd(pos, $file) {
-            // 第一步.将图片上传到服务器.
-            let res = await this.$api.user.uploadImage($file);
-            this.$refs.md.$img2Url(pos, res.data.full_url);
+            let res = await this.$api.uploadImage($file);
+            if(res.code == 0) {
+                this.$refs.md.$img2Url(pos, "http://127.0.0.1:8888/image/" + res.file);
+            }
+            
         }
     }
 }

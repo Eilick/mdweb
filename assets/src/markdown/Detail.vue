@@ -14,7 +14,12 @@
         </el-row>
         <el-row style="margin-top:30px;">
             <el-col align="center">
-                <el-button type="warning" size="large" @click="jumpEdit" style="margin-right:20px;">修改</el-button>
+                <el-button
+                    type="warning"
+                    size="large"
+                    @click="jumpEdit"
+                    style="margin-right:20px;"
+                >修改</el-button>
                 <el-popover placement="top" width="160" v-model="visible">
                     <p>确定删除该文档么？？</p>
                     <div style="text-align: right; margin: 0">
@@ -59,7 +64,7 @@ export default {
             let res = await this.$api.deleteMd(this.$route.params["id"]);
             if (res.code == 0) {
                 this.$message("删除成功");
-                 this.$emit("talk2SlieMenu", "delete", this.$route.params["id"])
+                this.$emit("talk2SlieMenu", "delete", this.$route.params["id"]);
             }
         }
     }
