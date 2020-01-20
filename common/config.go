@@ -19,6 +19,8 @@ type Config struct {
 	Mysql map[string]mysqlSection `toml:"mysql"`
 }
 
+var WorkDir *string
+
 type mainSection struct {
 	Host           string
 	GinMode        string
@@ -39,10 +41,12 @@ type mysqlSection struct {
 func GetConfigInstance() *Config {
 	cfgOnce.Do(func() {
 		cfile := flag.String("c", "./conf/mysql.toml", "config file")
+		WorkDir = flag.String("work-dir", "./", "work-dir file")
 		flag.Parse()
 		if _, err := toml.DecodeFile(*cfile, &cfgInstance); err != nil {
 			panic(err)
 		}
+
 	})
 	return cfgInstance
 }

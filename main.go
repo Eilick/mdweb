@@ -33,8 +33,13 @@ func main() {
 	router.Use(gin.Recovery())
 
 	gin.SetMode(gin.DebugMode)
-
+	staticWorkDir := *common.WorkDir + "assets/dist"
+	fmt.Println(staticWorkDir)
+	router.StaticFile("/md", staticWorkDir+"/md.html")
 	router.StaticFS("/image", http.Dir("./image"))
+	router.StaticFS("/css", http.Dir(staticWorkDir+"/css"))
+	router.StaticFS("/js", http.Dir(staticWorkDir+"/js"))
+	router.StaticFS("/fonts", http.Dir(staticWorkDir+"/fonts"))
 
 	router.POST("/sql", ExcuteSql)
 	router.GET("/db_list", getDbList)

@@ -8,9 +8,13 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+func GetDb() string {
+	return *common.WorkDir + "data.db"
+}
+
 func AddArticle(title, content string) (int64, error) {
 
-	tmpDb, err := sql.Open("sqlite3", "./data.db")
+	tmpDb, err := sql.Open("sqlite3", GetDb())
 
 	if err != nil {
 		panic(err)
@@ -37,7 +41,7 @@ func AddArticle(title, content string) (int64, error) {
 
 func UpdateMd(id, title, content string) (bool, error) {
 
-	tmpDb, err := sql.Open("sqlite3", "./data.db")
+	tmpDb, err := sql.Open("sqlite3", GetDb())
 
 	if err != nil {
 		panic(err)
@@ -61,7 +65,7 @@ func UpdateMd(id, title, content string) (bool, error) {
 
 func DeleteMd(id string) (bool, error) {
 
-	tmpDb, err := sql.Open("sqlite3", "./data.db")
+	tmpDb, err := sql.Open("sqlite3", GetDb())
 
 	if err != nil {
 		panic(err)
@@ -84,8 +88,8 @@ func DeleteMd(id string) (bool, error) {
 }
 
 func ArticleList() []map[string]interface{} {
-
-	tmpDb, err := sql.Open("sqlite3", "./data.db")
+	fmt.Println(GetDb())
+	tmpDb, err := sql.Open("sqlite3", GetDb())
 
 	if err != nil {
 		panic(err)
@@ -116,7 +120,7 @@ func ArticleList() []map[string]interface{} {
 
 func SingleArticle(id string) map[string]interface{} {
 
-	tmpDb, err := sql.Open("sqlite3", "./data.db")
+	tmpDb, err := sql.Open("sqlite3", GetDb())
 
 	if err != nil {
 		panic(err)
