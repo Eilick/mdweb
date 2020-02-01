@@ -3,7 +3,8 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"mysql-client/common"
+
+	"github.com/Eilick/mysql-client/common"
 
 	_ "github.com/mattn/go-sqlite3"
 )

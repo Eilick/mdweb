@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"mysql-client/common"
-	"mysql-client/database"
 	"net/http"
 	"strings"
+
+	"github.com/Eilick/mysql-client/common"
+	"github.com/Eilick/mysql-client/database"
 
 	"github.com/gin-gonic/gin"
 )
