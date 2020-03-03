@@ -89,7 +89,6 @@ func DeleteMd(id string) (bool, error) {
 }
 
 func ArticleList() []map[string]interface{} {
-	fmt.Println(GetDb())
 	tmpDb, err := sql.Open("sqlite3", GetDb())
 
 	if err != nil {

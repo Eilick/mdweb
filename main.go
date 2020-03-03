@@ -26,9 +26,7 @@ func Cors() gin.HandlerFunc {
 	}
 }
 func main() {
-	cfg := common.GetConfigInstance()
-	database.DbSetUp(cfg)
-
+	common.GetConfigInstance()
 	router := gin.New()
 	router.Use(Cors())
 	router.Use(gin.Recovery())
@@ -43,7 +41,7 @@ func main() {
 	router.StaticFS("/fonts", http.Dir(staticWorkDir+"/fonts"))
 
 	router.POST("/sql", ExcuteSql)
-	router.GET("/db_list", getDbList)
+	// router.GET("/db_list", getDbList)
 	router.GET("/test", Test)
 	router.POST("/markdown/upload_image", uploadImage)
 	router.POST("/markdown/create", CreateMd)
@@ -52,7 +50,7 @@ func main() {
 	router.GET("/markdown/list", MdList)
 	router.GET("/markdown/detail", SingleMd)
 
-	router.Run(cfg.Main.Host)
+	router.Run(":" + *common.Port)
 
 }
 
@@ -80,17 +78,17 @@ func ExcuteSql(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, d)
 }
 
-func getDbList(ctx *gin.Context) {
+// func getDbList(ctx *gin.Context) {
 
-	cfg := common.GetConfigInstance()
+// 	cfg := common.GetConfigInstance()
 
-	list := make(map[string]string)
-	for n, item := range cfg.Mysql {
-		list[n] = item.Name
-	}
+// 	list := make(map[string]string)
+// 	for n, item := range cfg.Mysql {
+// 		list[n] = item.Name
+// 	}
 
-	ctx.JSON(http.StatusOK, list)
-}
+// 	ctx.JSON(http.StatusOK, list)
+// }
 
 type Markdown struct {
 	Id      string `json:"id"`
