@@ -10,7 +10,7 @@ import (
 )
 
 func GetDb() string {
-	return *common.WorkDir + "data.db"
+	return *common.DbDir + "data.db"
 }
 
 func AddArticle(title, content string) (int64, error) {

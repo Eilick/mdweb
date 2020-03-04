@@ -48,7 +48,7 @@ func main() {
 	router.Use(gin.Recovery())
 
 	gin.SetMode(gin.DebugMode)
-	staticWorkDir := *common.WorkDir + "assets/dist"
+	staticWorkDir := "./assets/dist"
 	box := packr.NewBox(staticWorkDir)
 
 	if md, err := box.Find("md.html"); err == nil {
@@ -82,6 +82,7 @@ func main() {
 	})
 
 	router.StaticFS("/image", http.Dir("./image"))
+	router.StaticFS("/f", http.Dir("D:/github"))
 	//router.StaticFS("/css", http.Dir(staticWorkDir+"/css"))
 	//router.StaticFS("/js", http.Dir(staticWorkDir+"/js"))
 	//router.StaticFS("/fonts", http.Dir(staticWorkDir+"/fonts"))

@@ -6,16 +6,16 @@ import (
 )
 
 var (
-	cfgOnce     sync.Once
+	cfgOnce sync.Once
 )
 
-var WorkDir *string
+var DbDir *string
 var Port *string
 
 func GetConfigInstance() {
 	cfgOnce.Do(func() {
-		WorkDir = flag.String("work-dir", "./", "work-dir file")
-		Port = flag.String("port", "8888", "work-dir file")
+		DbDir = flag.String("db-dir", "./", "database dir file")
+		Port = flag.String("port", "8888", "port")
 		flag.Parse()
 
 	})
