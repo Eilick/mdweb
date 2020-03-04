@@ -6,12 +6,9 @@ function getRequestUrl(config) {
   if(lodash.startsWith(config.url, 'http://') || lodash.startsWith(config.url, 'https://') || lodash.startsWith(config.url, '//')) {
         return config.url;
     }
-
-    return `//127.0.0.1:8888${config.url}`;
-
+    
     if(process.env.NODE_ENV == 'development') {
       return `//127.0.0.1:8888${config.url}`;
-        //return `//${config.host.dev}${config.url}`;
     }
 
     return config.url
