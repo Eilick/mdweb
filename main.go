@@ -3,12 +3,15 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"os/exec"
 	"strings"
 
 	"github.com/Eilick/mysql-client/common"
 	"github.com/Eilick/mysql-client/database"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gobuffalo/packr"
 )
 
 func Cors() gin.HandlerFunc {
@@ -25,6 +28,19 @@ func Cors() gin.HandlerFunc {
 		c.Next()
 	}
 }
+func build(filepath string) {
+	_ = os.Setenv("CGO_ENABLED", "0")
+	_ = os.Setenv("GOARCH", "amd64")
+	_ = os.Setenv("GOOS", "linux")
+
+	arg := []string{"build", filepath}
+	if err := exec.Command("go", arg...).Run(); err != nil {
+		fmt.Println("编译失败:", err)
+	} else {
+		fmt.Println("编译成功")
+	}
+}
+
 func main() {
 	common.GetConfigInstance()
 	router := gin.New()
@@ -33,12 +49,42 @@ func main() {
 
 	gin.SetMode(gin.DebugMode)
 	staticWorkDir := *common.WorkDir + "assets/dist"
-	fmt.Println(staticWorkDir)
-	router.StaticFile("/md", staticWorkDir+"/md.html")
+	box := packr.NewBox(staticWorkDir)
+
+	if md, err := box.Find("md.html"); err == nil {
+		router.GET("/md", func(ctx *gin.Context) {
+			ctx.Data(http.StatusOK, "text/html", md)
+		})
+	}
+	router.GET("/css/:name", func(ctx *gin.Context) {
+		name := ctx.Param("name")
+		if css, err := box.Find("css/" + name); err == nil {
+			ctx.Data(http.StatusOK, "text/css", css)
+		} else {
+			ctx.Data(http.StatusOK, "text/css", []byte(""))
+		}
+	})
+	router.GET("/fonts/:name", func(ctx *gin.Context) {
+		name := ctx.Param("name")
+		if css, err := box.Find("fonts/" + name); err == nil {
+			ctx.Data(http.StatusOK, "text/css", css)
+		} else {
+			ctx.Data(http.StatusOK, "text/css", []byte(""))
+		}
+	})
+	router.GET("/js/:name", func(ctx *gin.Context) {
+		name := ctx.Param("name")
+		if css, err := box.Find("js/" + name); err == nil {
+			ctx.Data(http.StatusOK, "application/javascript", css)
+		} else {
+			ctx.Data(http.StatusOK, "application/javascript", []byte(""))
+		}
+	})
+
 	router.StaticFS("/image", http.Dir("./image"))
-	router.StaticFS("/css", http.Dir(staticWorkDir+"/css"))
-	router.StaticFS("/js", http.Dir(staticWorkDir+"/js"))
-	router.StaticFS("/fonts", http.Dir(staticWorkDir+"/fonts"))
+	//router.StaticFS("/css", http.Dir(staticWorkDir+"/css"))
+	//router.StaticFS("/js", http.Dir(staticWorkDir+"/js"))
+	//router.StaticFS("/fonts", http.Dir(staticWorkDir+"/fonts"))
 
 	router.POST("/sql", ExcuteSql)
 	// router.GET("/db_list", getDbList)
