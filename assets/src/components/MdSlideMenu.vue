@@ -51,7 +51,7 @@ export default {
                     theIndex = index;
                 }
             });
-            return theIndex
+            return theIndex + ""
         }
     },
     methods: {
