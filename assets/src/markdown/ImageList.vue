@@ -7,8 +7,8 @@
                 <el-col :span="8" style="margin-bottom: 10px;">
                     <el-card style="height: 400px;">
                         <p slot="header">上传于：{{item.create_at}}</p>
-                        <a :href="'http://127.0.0.1:8888' + item.url" target="_blank">
-                        <el-image :src="'http://127.0.0.1:8888' + item.url" :fit="fits"></el-image>
+                        <a :href="item.url" target="_blank">
+                        <el-image :src=" item.url" :fit="fits"></el-image>
                         </a>
                     </el-card>
                 </el-col>

@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
-	"os/exec"
 	"strings"
 
 	"github.com/Eilick/mysql-client/common"
@@ -28,20 +28,13 @@ func Cors() gin.HandlerFunc {
 		c.Next()
 	}
 }
-func build(filepath string) {
-	_ = os.Setenv("CGO_ENABLED", "0")
-	_ = os.Setenv("GOARCH", "amd64")
-	_ = os.Setenv("GOOS", "linux")
-
-	arg := []string{"build", filepath}
-	if err := exec.Command("go", arg...).Run(); err != nil {
-		fmt.Println("编译失败:", err)
-	} else {
-		fmt.Println("编译成功")
-	}
-}
 
 func main() {
+
+	if _, err := os.Stat("./image"); os.IsNotExist(err) {
+		os.Mkdir("./image", 0777) //0777也可以os.ModePerm
+		os.Chmod("./image", 0777)
+	}
 	common.GetConfigInstance()
 	router := gin.New()
 	router.Use(Cors())
@@ -88,6 +81,7 @@ func main() {
 	router.POST("/markdown/delete", DeleteMd)
 	router.GET("/markdown/list", MdList)
 	router.GET("/markdown/detail", SingleMd)
+	router.GET("/markdown/images", getImageList)
 
 	router.Run(":" + *common.Port)
 
@@ -223,4 +217,22 @@ func uploadImage(ctx *gin.Context) {
 		"file": fmt.Sprintf("%s.%s", md5Name, l[1]),
 	})
 	return
+}
+
+func getImageList(ctx *gin.Context) {
+	fs, _ := ioutil.ReadDir("./image")
+	list := []map[string]interface{}{}
+	for _, file := range fs {
+		t := file.ModTime()
+		ts := t.Format("2006-01-02 15:04:05")
+		list = append(list, map[string]interface{}{
+			"name":      file.Name(),
+			"create_at": ts,
+			"url":       "/image/" + file.Name(),
+		})
+	}
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"code": 0,
+		"data": list,
+	})
 }
