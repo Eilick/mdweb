@@ -31,5 +31,10 @@ export default {
 		var formdata = new FormData();
         formdata.append('file', file);
 		return request('post', '/markdown/upload_image', formdata)
-	},
+    },
+    delImg : (name) => {
+        return request('post', '/markdown/del_image', {
+            name
+        })
+    },
 }

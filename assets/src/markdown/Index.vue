@@ -10,11 +10,11 @@
                 </el-main>
             </el-container>
         </el-container>
-        <el-row style="bottom:40px;position:fixed; right:30px;z-index:20000">
+        <!-- <el-row style="bottom:40px;position:fixed; right:30px;z-index:20000">
             <el-button  size="largr"  type="primary" round @click="jumpTo('/markdown/create')">
                 <i class="el-icon-plus"></i>新建
             </el-button>
-        </el-row>
+        </el-row> -->
     </el-row>
 </template>
 <script>

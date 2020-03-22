@@ -16,6 +16,11 @@ Vue.use(mavonEditor);
 import MdEditor from "@/components/MarkdownEditor.vue"
 Vue.component("markdown-editor", MdEditor)
 
+import VueClipboard from 'vue-clipboard2'
+VueClipboard.config.autoSetContainer = true
+Vue.use(VueClipboard)
+
+
 Vue.config.productionTip = false;
 Vue.prototype.Export2Excel = Export2Excel;
 Vue.prototype.$api = api;

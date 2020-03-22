@@ -8,13 +8,16 @@
             active-text-color="#e6a23c"
             :default-active="defaultActive"
         >
+            <el-menu-item index="create" @click="jumpCreate()">
+                <span slot="title"><i class="el-icon-edit"></i>新建</span>
+            </el-menu-item>
             <template v-for="(item, idx) in mdList">
                 <el-menu-item :index="idx + ''" :key="idx + ''"  @click="jumpMd(item.id)">
                     <span slot="title">{{item.title}}</span>
                 </el-menu-item>
             </template>
             <el-menu-item index="image" @click="jumpImageList()">
-                <span slot="title"><i class="el-icon-picture"></i>上传图片列表</span>
+                <span slot="title"><i class="el-icon-upload"></i>上传图片</span>
             </el-menu-item>
         </el-menu>
     </div>
@@ -44,6 +47,13 @@ export default {
     },
     computed : {
         defaultActive : function() {
+            console.log(this.$route)
+            if(this.$route.name == "Home" || this.$route.name =="CreateMd") {
+                return "create"
+            }
+            if(this.$route.name == "ImageList") {
+                return "image"
+            }
             let theIndex = -1;
             this.mdList.forEach((obj, index) => {
                 if (this.$route.params.id == obj.id) {
@@ -62,7 +72,10 @@ export default {
             this.$router.push("/markdown/detail/" + id);
         },
         jumpImageList() {
-            this.$router.push("/markdown/images?hidebar=1");
+            this.$router.push("/markdown/images");
+        },
+        jumpCreate() {
+            this.$router.push("/markdown/create");
         },
         afterDelete(id) {
             let jumpIndex = 0;

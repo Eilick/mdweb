@@ -82,6 +82,7 @@ func main() {
 	router.GET("/markdown/list", MdList)
 	router.GET("/markdown/detail", SingleMd)
 	router.GET("/markdown/images", getImageList)
+	router.POST("/markdown/del_image", delUploadImg)
 
 	router.Run(":" + *common.Port)
 
@@ -234,5 +235,42 @@ func getImageList(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, map[string]interface{}{
 		"code": 0,
 		"data": list,
+	})
+}
+
+type Pic struct {
+	Name string `json:"name"`
+}
+
+func delUploadImg(ctx *gin.Context) {
+	var pic Pic
+	if err := ctx.BindJSON(&pic); err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	filePath := "./image/" + pic.Name
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code": -1,
+			"msg":  "暂无该图片",
+		})
+		return
+	}
+	err := os.Remove(filePath)
+
+	if err == nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code": 0,
+			"msg":  "删除成功",
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"code": -2,
+		"msg":  "删除失败",
 	})
 }
