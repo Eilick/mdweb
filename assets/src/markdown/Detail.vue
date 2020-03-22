@@ -67,6 +67,7 @@
                     } else {
                         this.$emit("talk2SlieMenu", "delete", this.$route.params["id"]);
                     }
+                    this.visible = false
                     
                 }
             },
