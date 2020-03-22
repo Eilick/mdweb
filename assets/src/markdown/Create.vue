@@ -1,7 +1,9 @@
 <template>
     <el-row>
         <el-row>
-            <el-input v-model="title" placeholder="请输入内容"></el-input>
+            <el-col :span="12">
+                <el-input v-model="title" placeholder="请输入内容"></el-input>
+            </el-col>
         </el-row>
 
         <el-row style="margin-top: 20px;">
@@ -10,41 +12,39 @@
 
         <el-row style="margin-top:30px;">
             <el-col align="center">
-                <el-button
-                    type="warning"
-                    size="large"
-                    @click="createArticle"
-                    style="margin-right:20px;"
-                >创建</el-button>
+                <el-button type="warning" size="large" @click="createArticle" style="margin-right:20px;">创建</el-button>
             </el-col>
         </el-row>
     </el-row>
 </template>
 
 <script>
-export default {
-    props: ["articleId"],
-    data() {
-        return {
-            mdtext: "",
-            title: ""
-        };
-    },
-    methods: {
-        setMdText(t) {
-            this.mdtext = t;
+    export default {
+        props: ["articleId"],
+        data() {
+            return {
+                mdtext: "",
+                title: ""
+            };
         },
-        async createArticle() {
-            let res = await this.$api.createMd(this.title, this.mdtext);
-            if(res.code == 0) {
-                this.$message("创建成功")
-                this.$router.push("/markdown/detail/" + res.id);
-                this.$emit("talk2SlieMenu", "create")
-                //window.location.reload()
-            } else {
-                 this.$message(res.message)
+        mounted() {
+            document.title = "创建"
+        },
+        methods: {
+            setMdText(t) {
+                this.mdtext = t;
+            },
+            async createArticle() {
+                let res = await this.$api.createMd(this.title, this.mdtext);
+                if (res.code == 0) {
+                    this.$message("创建成功")
+                    this.$router.push("/markdown/detail/" + res.id);
+                    this.$emit("talk2SlieMenu", "create")
+                    //window.location.reload()
+                } else {
+                    this.$message(res.message)
+                }
             }
         }
-    }
-};
+    };
 </script>

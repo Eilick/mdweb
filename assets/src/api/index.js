@@ -16,8 +16,15 @@ export default {
             id
         })
     },
-    getMdList: () => {
-        return request('get', '/markdown/list')
+    recoverMd: (id) => {
+        return request('post', '/markdown/recover', {
+            id
+        })
+    },
+    getMdList: (listType) => {
+        return request('get', '/markdown/list', {
+            list_type : listType
+        })
     },
     getImageList: () => {
         return request('get', '/markdown/images')

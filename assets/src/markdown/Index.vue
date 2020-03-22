@@ -5,16 +5,22 @@
                 <el-aside width="230px" v-if="!print">
                     <slidemenu ref="Slide"></slidemenu>
                 </el-aside>
-                <el-main style="margin-bottom: 200px;padding-left: 20px;overflow: scroll;">
+                <el-main style="margin-bottom: 200px;">
                     <router-view @talk2SlieMenu="talk2SlieMenu"/>
                 </el-main>
             </el-container>
         </el-container>
-        <!-- <el-row style="bottom:40px;position:fixed; right:30px;z-index:20000">
-            <el-button  size="largr"  type="primary" round @click="jumpTo('/markdown/create')">
-                <i class="el-icon-plus"></i>新建
+        <el-row style="top:20px;position:fixed; right:30px;z-index:20000">
+            <el-button  size="mini"  type="primary" round @click="jumpTo('/markdown/create')">
+               新建
             </el-button>
-        </el-row> -->
+            <el-button  size="mini"  type="primary" round @click="jumpTo('/markdown/images')">
+                上传图片
+            </el-button>
+            <el-button  size="mini"  type="danger" round @click="jumpTo('/markdown/trash_list')">
+                回收站
+            </el-button>
+        </el-row>
     </el-row>
 </template>
 <script>

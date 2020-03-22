@@ -1,7 +1,7 @@
 <template>
     <el-row>
         <el-row>
-            <el-upload class="upload-demo" ref="upload" action="http://127.0.0.1:8888/markdown/upload_image"
+            <el-upload class="upload-demo" ref="upload" action="/markdown/upload_image"
                 :on-remove="handleRemove" :file-list="fileList" :auto-upload="false" :limit="8" multiple
                 :on-exceed="handleExceed" list-type="picture-card" :on-success="handleSuccess">
                 <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -26,7 +26,7 @@
                         </div>
 
                         <a :href="item.url" target="_blank">
-                            <el-image :src=" item.url" :fit="fits"></el-image>
+                            <el-image :src="item.url" :fit="fits" lazy></el-image>
                         </a>
                     </el-card>
                 </el-col>
@@ -46,6 +46,7 @@
             };
         },
         mounted() {
+            document.title = "上传图片"
             this.getImageList();
         },
         methods: {

@@ -79,6 +79,7 @@ func main() {
 	router.POST("/markdown/create", CreateMd)
 	router.POST("/markdown/update", UpdateMd)
 	router.POST("/markdown/delete", DeleteMd)
+	router.POST("/markdown/recover", RecoverMd)
 	router.GET("/markdown/list", MdList)
 	router.GET("/markdown/detail", SingleMd)
 	router.GET("/markdown/images", getImageList)
@@ -158,7 +159,14 @@ func DeleteMd(ctx *gin.Context) {
 		return
 	}
 
-	id, err := database.DeleteMd(md.Id)
+	d := database.SingleArticle(md.Id)
+	var res bool = false
+	var err error
+	if len(d) > 0 && d["show_status"].(int) == -1 {
+		res, err = database.DeleteMdForever(md.Id)
+	} else {
+		res, err = database.DeleteMd(md.Id)
+	}
 
 	if err != nil {
 		ctx.JSON(http.StatusOK, map[string]interface{}{
@@ -170,14 +178,41 @@ func DeleteMd(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, map[string]interface{}{
 		"code": 0,
-		"id":   id,
+		"id":   res,
+	})
+}
+
+func RecoverMd(ctx *gin.Context) {
+	var md Markdown
+	if err := ctx.BindJSON(&md); err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	res, err := database.RecoverMd(md.Id)
+
+	if err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"code": 0,
+		"id":   res,
 	})
 
 }
 
 func MdList(ctx *gin.Context) {
 
-	list := database.ArticleList()
+	s := ctx.DefaultQuery("list_type", "ok")
+	list := database.ArticleList(s)
 
 	ctx.JSON(http.StatusOK, list)
 
@@ -185,7 +220,8 @@ func MdList(ctx *gin.Context) {
 
 func SingleMd(ctx *gin.Context) {
 
-	d := database.SingleArticle(ctx.DefaultQuery("id", "0"))
+	id := ctx.DefaultQuery("id", "0")
+	d := database.SingleArticle(id)
 
 	ctx.JSON(http.StatusOK, d)
 
@@ -229,7 +265,7 @@ func getImageList(ctx *gin.Context) {
 		list = append(list, map[string]interface{}{
 			"name":      file.Name(),
 			"create_at": ts,
-			"url":       "/image/" + file.Name(),
+			"url":       "http://" + ctx.Request.Host + "/image/" + file.Name(),
 		})
 	}
 	ctx.JSON(http.StatusOK, map[string]interface{}{

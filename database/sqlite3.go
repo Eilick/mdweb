@@ -88,14 +88,66 @@ func DeleteMd(id string) (bool, error) {
 	return true, nil
 }
 
-func ArticleList() []map[string]interface{} {
+func DeleteMdForever(id string) (bool, error) {
+
 	tmpDb, err := sql.Open("sqlite3", GetDb())
 
 	if err != nil {
 		panic(err)
 	}
 
-	rows, err := tmpDb.Query("SELECT id, title FROM markdown where show_status=0 order by update_at desc")
+	stmt, err := tmpDb.Prepare("DELETE from markdown WHERE id= ? and show_status=-1")
+	if err != nil {
+		return false, err
+	}
+
+	_, err = stmt.Exec(id)
+	stmt.Close()
+	tmpDb.Close()
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+func RecoverMd(id string) (bool, error) {
+
+	tmpDb, err := sql.Open("sqlite3", GetDb())
+
+	if err != nil {
+		panic(err)
+	}
+
+	stmt, err := tmpDb.Prepare("UPDATE markdown SET show_status=0,update_at =? WHERE id= ? and show_status = -1")
+	if err != nil {
+		return false, err
+	}
+
+	nowTime := common.GetNowDateTimeString()
+	_, err = stmt.Exec(nowTime, id)
+	stmt.Close()
+	tmpDb.Close()
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+func ArticleList(listStatus string) []map[string]interface{} {
+	tmpDb, err := sql.Open("sqlite3", GetDb())
+
+	if err != nil {
+		panic(err)
+	}
+
+	var showStatus int = 0
+	if listStatus == "trash" {
+		showStatus = -1
+	}
+	sqlStr := fmt.Sprintf("SELECT id, title FROM markdown where show_status=%d order by update_at desc", showStatus)
+	rows, err := tmpDb.Query(sqlStr)
 
 	if err != nil {
 		return []map[string]interface{}{}
@@ -126,7 +178,7 @@ func SingleArticle(id string) map[string]interface{} {
 		panic(err)
 	}
 
-	rows, err := tmpDb.Query(fmt.Sprintf("SELECT id,title,content,create_at,update_at FROM markdown where id = %s", id))
+	rows, err := tmpDb.Query(fmt.Sprintf("SELECT id,title,content,create_at,update_at,show_status FROM markdown where id = %s", id))
 
 	if err != nil {
 		return map[string]interface{}{}
@@ -139,13 +191,15 @@ func SingleArticle(id string) map[string]interface{} {
 		content := ""
 		createAt := ""
 		updateAt := ""
-		if err := rows.Scan(&id, &title, &content, &createAt, &updateAt); err == nil {
+		showStatus := 0
+		if err := rows.Scan(&id, &title, &content, &createAt, &updateAt, &showStatus); err == nil {
 			data = map[string]interface{}{
-				"id":        id,
-				"title":     title,
-				"content":   content,
-				"update_at": updateAt,
-				"create_at": createAt,
+				"id":          id,
+				"title":       title,
+				"content":     content,
+				"update_at":   updateAt,
+				"create_at":   createAt,
+				"show_status": showStatus,
 			}
 			break
 		}

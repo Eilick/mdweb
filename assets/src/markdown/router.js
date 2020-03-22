@@ -6,6 +6,7 @@ import UpdateMd from '@/markdown/Edit'
 
 import MdDetail from '@/markdown/Detail'
 import ImageList from '@/markdown/ImageList'
+import TrashMdList from '@/markdown/TrashMdList'
 
 Vue.use(Router)
 
@@ -35,6 +36,11 @@ const router = new Router({
             path: '/markdown/images',
             name: 'ImageList',
             component: ImageList,
+        },
+        {
+            path: '/markdown/trash_list',
+            name: 'TrashMdList',
+            component: TrashMdList,
         },
     ]
 })
