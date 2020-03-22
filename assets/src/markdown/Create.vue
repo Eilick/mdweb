@@ -3,7 +3,6 @@
         <el-row>
             <el-input v-model="title" placeholder="请输入内容"></el-input>
         </el-row>
-        <el-divider></el-divider>
 
         <el-row style="margin-top: 20px;">
             <markdown-editor @inputMarkdown="setMdText" />
@@ -40,7 +39,8 @@ export default {
             if(res.code == 0) {
                 this.$message("创建成功")
                 this.$router.push("/markdown/detail/" + res.id);
-                window.location.reload()
+                this.$emit("talk2SlieMenu", "create")
+                //window.location.reload()
             } else {
                  this.$message(res.message)
             }

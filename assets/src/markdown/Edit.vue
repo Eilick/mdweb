@@ -52,7 +52,8 @@ export default {
             if (res.code == 0) {
                 this.$message("修改成功");
                 this.$router.push("/markdown/detail/" + this.id);
-                window.location.reload();
+                this.$emit("talk2SlieMenu", "create")
+                //window.location.reload();
             } else {
                 this.$message(res.message);
             }

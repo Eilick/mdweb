@@ -9,12 +9,12 @@ var (
 	cfgOnce sync.Once
 )
 
-var DbDir *string
+var DbFile *string
 var Port *string
 
 func GetConfigInstance() {
 	cfgOnce.Do(func() {
-		DbDir = flag.String("db-dir", "./", "database dir file")
+		DbFile = flag.String("db", "./data.db", "database file")
 		Port = flag.String("port", "8888", "port")
 		flag.Parse()
 

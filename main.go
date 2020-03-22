@@ -51,8 +51,8 @@ func main() {
 	staticWorkDir := "./assets/dist"
 	box := packr.NewBox(staticWorkDir)
 
-	if md, err := box.Find("md.html"); err == nil {
-		router.GET("/md", func(ctx *gin.Context) {
+	if md, err := box.Find("index.html"); err == nil {
+		router.GET("/", func(ctx *gin.Context) {
 			ctx.Data(http.StatusOK, "text/html", md)
 		})
 	}
@@ -82,14 +82,6 @@ func main() {
 	})
 
 	router.StaticFS("/image", http.Dir("./image"))
-	router.StaticFS("/f", http.Dir("D:/github"))
-	//router.StaticFS("/css", http.Dir(staticWorkDir+"/css"))
-	//router.StaticFS("/js", http.Dir(staticWorkDir+"/js"))
-	//router.StaticFS("/fonts", http.Dir(staticWorkDir+"/fonts"))
-
-	router.POST("/sql", ExcuteSql)
-	// router.GET("/db_list", getDbList)
-	router.GET("/test", Test)
 	router.POST("/markdown/upload_image", uploadImage)
 	router.POST("/markdown/create", CreateMd)
 	router.POST("/markdown/update", UpdateMd)
@@ -100,42 +92,6 @@ func main() {
 	router.Run(":" + *common.Port)
 
 }
-
-type SqlReq struct {
-	Sql    string `json:"sql"`
-	DbName string `json:"db_name"`
-}
-
-func Test(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, map[string]interface{}{})
-}
-
-func ExcuteSql(ctx *gin.Context) {
-
-	var sqlreq SqlReq
-	err := ctx.BindJSON(&sqlreq)
-	fmt.Println(sqlreq)
-
-	if err != nil {
-		ctx.JSON(http.StatusOK, map[string]interface{}{})
-		return
-	}
-
-	d := database.GetSqlExcute(sqlreq.DbName, sqlreq.Sql)
-	ctx.JSON(http.StatusOK, d)
-}
-
-// func getDbList(ctx *gin.Context) {
-
-// 	cfg := common.GetConfigInstance()
-
-// 	list := make(map[string]string)
-// 	for n, item := range cfg.Mysql {
-// 		list[n] = item.Name
-// 	}
-
-// 	ctx.JSON(http.StatusOK, list)
-// }
 
 type Markdown struct {
 	Id      string `json:"id"`

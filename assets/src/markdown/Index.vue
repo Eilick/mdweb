@@ -2,10 +2,10 @@
     <el-row id="app">
         <el-container>
             <el-container>
-                <el-aside :width="showSlideMenu ? open : close">
+                <el-aside width="230px" v-if="!print">
                     <slidemenu ref="Slide"></slidemenu>
                 </el-aside>
-                <el-main style="margin-bottom: 200px;">
+                <el-main style="margin-bottom: 200px;padding-left: 20px;">
                     <router-view @talk2SlieMenu="talk2SlieMenu"/>
                 </el-main>
             </el-container>
@@ -18,8 +18,6 @@
     </el-row>
 </template>
 <script>
-//components
-import myheader from "@/components/EleHeader";
 import slideMenu from "@/components/MdSlideMenu";
 
 import moment from "moment";
@@ -28,18 +26,21 @@ export default {
     name: "Md",
     data() {
         return {
-            close: "64px",
-            open: "250px",
-            headerHeight: "60px",
-            showSlideMenu: true
-        };
+            print : false,
+        }
+        
     },
     components: {
-        myheader: myheader,
         slidemenu: slideMenu
     },
     mounted() {
-        this.updadteMdList();
+        
+        if(this.$route.query.print == 1) {
+            this.print = true
+            window.print()
+        } else {
+            this.updadteMdList();
+        }
     },
     methods: {
         jumpTo(p) {
@@ -52,7 +53,7 @@ export default {
             if(action == "delete") {
                 this.$refs.Slide.afterDelete(obj)
             } else if(action == "create") {
-                this.$refs.Slide.getMdList(obj)
+                this.updadteMdList()
             }
         }
 

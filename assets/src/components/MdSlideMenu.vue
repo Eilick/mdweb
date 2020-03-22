@@ -10,7 +10,6 @@
         >
             <template v-for="(item, idx) in mdList">
                 <el-menu-item :index="idx + ''" :key="idx + ''" :route="{path:'/markdown/detail/' + item.id}" @click="jumpMd(item.id)">
-                    <i class="el-icon-menu"></i>
                     <span slot="title">{{item.title}}</span>
                 </el-menu-item>
             </template>
@@ -19,7 +18,7 @@
 </template>
 <style scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 250px;
+    width: 230px;
     min-height: 100%;
 }
 .middle {
@@ -40,12 +39,9 @@ export default {
             mdList: []
         };
     },
-    mounted() {
-        //this.getMdList();
-    },
     computed : {
         defaultActive : function() {
-            let theIndex = 0;
+            let theIndex = -1;
             this.mdList.forEach((obj, index) => {
                 if (this.$route.params.id == obj.id) {
                     theIndex = index;
@@ -63,23 +59,24 @@ export default {
             this.$router.push("/markdown/detail/" + id);
         },
         afterDelete(id) {
-            let theIndex = 0;
+            let jumpIndex = 0;
+            let delIndex = 0;
             this.mdList.forEach((obj, index) => {
                 if (id == obj.id) {
-                    theIndex = index;
+                    delIndex = index;
                 }
             });
-            if (theIndex == this.mdList.length - 1) {
-                this.getMdList();
-                setTimeout(() => {
-                    this.jumpMd(this.mdList[this.mdList.length - 1].id);
-                }, 100);
+
+            if (delIndex == this.mdList.length - 1 ) {
+                jumpIndex = delIndex - 1
             } else {
-                this.getMdList();
-                setTimeout(() => {
-                    this.jumpMd(this.mdList[theIndex].id);
-                }, 100);
+                jumpIndex = delIndex + 1
             }
+            this.jumpMd(this.mdList[jumpIndex].id)
+            setTimeout(() => {
+                this.getMdList()
+            }, 100)
+            
         }
     }
 };
