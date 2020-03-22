@@ -5,7 +5,7 @@
                 <el-aside width="230px" v-if="!print">
                     <slidemenu ref="Slide"></slidemenu>
                 </el-aside>
-                <el-main style="margin-bottom: 200px;padding-left: 20px;">
+                <el-main style="margin-bottom: 200px;padding-left: 20px;overflow: scroll;">
                     <router-view @talk2SlieMenu="talk2SlieMenu"/>
                 </el-main>
             </el-container>
@@ -28,7 +28,6 @@ export default {
         return {
             print : false,
         }
-        
     },
     components: {
         slidemenu: slideMenu

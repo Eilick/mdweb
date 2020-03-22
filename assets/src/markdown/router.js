@@ -5,6 +5,7 @@ import CreateMd from '@/markdown/Create'
 import UpdateMd from '@/markdown/Edit'
 
 import MdDetail from '@/markdown/Detail'
+import ImageList from '@/markdown/ImageList'
 
 Vue.use(Router)
 
@@ -29,6 +30,11 @@ const router = new Router({
             path: '/markdown/detail/:id',
             name: 'MdDetail',
             component: MdDetail,
+        },
+        {
+            path: '/markdown/images',
+            name: 'ImageList',
+            component: ImageList,
         },
     ]
 })

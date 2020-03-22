@@ -9,10 +9,13 @@
             :default-active="defaultActive"
         >
             <template v-for="(item, idx) in mdList">
-                <el-menu-item :index="idx + ''" :key="idx + ''" :route="{path:'/markdown/detail/' + item.id}" @click="jumpMd(item.id)">
+                <el-menu-item :index="idx + ''" :key="idx + ''"  @click="jumpMd(item.id)">
                     <span slot="title">{{item.title}}</span>
                 </el-menu-item>
             </template>
+            <el-menu-item index="image" @click="jumpImageList()">
+                <span slot="title"><i class="el-icon-picture"></i>上传图片列表</span>
+            </el-menu-item>
         </el-menu>
     </div>
 </template>
@@ -57,6 +60,9 @@ export default {
         },
         jumpMd(id) {
             this.$router.push("/markdown/detail/" + id);
+        },
+        jumpImageList() {
+            this.$router.push("/markdown/images?hidebar=1");
         },
         afterDelete(id) {
             let jumpIndex = 0;

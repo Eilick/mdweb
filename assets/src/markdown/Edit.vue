@@ -3,7 +3,6 @@
         <el-row>
             <el-input v-model="title" placeholder="请输入内容"></el-input>
         </el-row>
-        <el-divider></el-divider>
         <el-row style="margin-top: 20px;">
             <markdown-editor @inputMarkdown="setMdText" :initValue="mdtext" />
         </el-row>
@@ -27,8 +26,17 @@ export default {
         return {
             id: "",
             mdtext: "",
-            title: ""
+            title: "",
+            timer : null
         };
+    },
+    watch : {
+        title : function(old, ne) {
+            if(old == "" || ne == "") {
+                return
+            }
+            this.autoSave()
+        }
     },
     mounted() {
         this.id = this.$route.params["id"];
@@ -36,7 +44,18 @@ export default {
     },
     methods: {
         setMdText(t) {
-            this.mdtext = t;
+            if (t != this.mdtext) {
+                this.mdtext = t;
+                this.autoSave()
+            }
+        },
+        autoSave() {
+            if(this.timer != null) {
+                clearTimeout(this.timer)
+            } 
+            this.timer = setTimeout(() => {
+                this.updateArticle()
+            }, 3000)
         },
         async getArticleDetail() {
             let res = await this.$api.getMdDetail(this.id);
@@ -50,8 +69,10 @@ export default {
                 this.mdtext
             );
             if (res.code == 0) {
-                this.$message("修改成功");
-                this.$router.push("/markdown/detail/" + this.id);
+                this.$notify({
+                    message: '自动保存成功',
+                });
+                //this.$router.push("/markdown/detail/" + this.id);
                 this.$emit("talk2SlieMenu", "create")
                 //window.location.reload();
             } else {

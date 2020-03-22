@@ -1,8 +1,6 @@
 <template>
     <el-row>
         <h2>{{title}}</h2>
-        <el-divider></el-divider>
-
         <el-row style="margin-top: 20px;">
             <mavon-editor v-model="mdtext" :defaultOpen="'preview'" :subfield="false" :toolbarsFlag="false"
                 :codeStyle="'code-idea'" id="pdfId" />
