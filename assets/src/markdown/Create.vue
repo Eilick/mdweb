@@ -7,7 +7,7 @@
         </el-row>
 
         <el-row style="margin-top: 20px;">
-            <markdown-editor @inputMarkdown="setMdText" />
+            <markdown-editor @inputMarkdown="setMdText" :initValue="mdtext"/>
         </el-row>
 
         <el-row style="margin-top:30px;">
@@ -29,6 +29,12 @@
         },
         mounted() {
             document.title = "创建"
+            if(this.$route.query.from_id != undefined && this.$route.query.from_id > 0) {
+                setTimeout(() => {
+                    this.getArticleDetail(this.$route.query.from_id)
+                }, 500)
+                
+            }
         },
         methods: {
             setMdText(t) {
@@ -44,7 +50,13 @@
                 } else {
                     this.$message(res.message)
                 }
-            }
+            },
+            async getArticleDetail(id) {
+                let res = await this.$api.getMdDetail(id);
+                this.mdtext = res.content;
+                this.title = res.title;
+                document.title = res.title;
+            },
         }
     };
 </script>

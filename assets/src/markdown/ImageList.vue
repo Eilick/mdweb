@@ -13,16 +13,16 @@
         <el-row style="margin-top: 20px;" :gutter="12">
             <template v-for="item in list">
                 <el-col :span="8" style="margin-bottom: 10px;">
-                    <el-card style="height: 400px;">
+                    <el-card style="height: 350px;">
                         <div slot="header" class="clearfix">
                             <strong style="font-size: 17px;">{{item.create_at.substr(0,10)}}</strong><span
                                 style="font-size: 13px;">({{item.create_at.substr(11,5)}})</span>
 
-                            <el-button style="float: right; padding: 3px 5px;" type="danger"
+                            <el-button style="float: right; padding: 3px 10px; margin-left: 5px;" type="danger"
                                 @click="askToDelImg(item.name)" icon="el-icon-delete" size="mini">
                             </el-button>
-                            <el-button type="text" @click="copyUrlPath(item.url)" style="float: right; padding: 3px 0;">
-                                复制URL</el-button>
+                            <el-button type="text" @click="copyUrlPath(item.uri)" style="float: right; padding: 3px 0;">
+                                复制</el-button>
                         </div>
 
                         <a :href="item.url" target="_blank">
@@ -56,9 +56,8 @@
             },
             copyUrlPath(urlStr) {
                 this.$copyText(urlStr).then((e) => {
-                    this.$message('复制成功')
+                    this.$message('复制路径成功')
                 }, () => {
-                    alert('复制失败')
                 })
             },
             askToDelImg(name) {

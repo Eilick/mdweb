@@ -10,7 +10,7 @@
                 </el-main>
             </el-container>
         </el-container>
-        <el-row style="top:20px;position:fixed; right:30px;z-index:20000">
+        <el-row style="top:50px;position:fixed; right:30px;z-index:20000">
             <el-button  size="mini"  type="primary" round @click="jumpTo('/markdown/create')">
                新建
             </el-button>

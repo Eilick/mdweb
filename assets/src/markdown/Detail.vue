@@ -1,17 +1,30 @@
 <template>
     <el-row>
-        <h2>{{title}}</h2>
+        <h2>{{title}}<span style="display: inline-block;margin-left: 30px;">
+        <template v-if="!isTrash">
+            <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="jumpEdit"></el-button>
+        </template>
+        <el-popover placement="top" width="160" v-model="visible">
+            <p>确定删除该文档么？？</p>
+            <div style="text-align: right; margin: 0">
+                <el-button size="mini" type="text" @click="visible = false">取消</el-button>
+                <el-button type="primary" size="mini" @click="deleteMd">确定</el-button>
+            </div>
+            <el-button slot="reference" type="danger" icon="el-icon-delete"  size="mini" circle style="margin-left: 10px">
+                </el-button>
+        </el-popover>
+        </span></h2>
         <el-row style="margin-top: 20px;">
             <mavon-editor v-model="mdtext" :defaultOpen="'preview'" :subfield="false" :toolbarsFlag="false"
                 :codeStyle="'code-idea'" id="pdfId" />
         </el-row>
         <el-row style="margin-top:30px;">
             <el-col align="center">
-                <template v-if="!isTrash">
+               <!--  <template v-if="!isTrash">
                     <el-button type="warning" @click="jumpEdit" style="margin-right:20px;">修改</el-button>
-                </template>
+                </template> -->
                 
-                <el-popover placement="top" width="160" v-model="visible">
+              <!--   <el-popover placement="top" width="160" v-model="visible">
                     <p>确定删除该文档么？？</p>
                     <div style="text-align: right; margin: 0">
                         <el-button size="mini" type="text" @click="visible = false">取消</el-button>
@@ -21,8 +34,9 @@
                         完全删除</el-button>
                     <el-button slot="reference" type="danger" style="margin-right:20px;" v-else>
                         删除</el-button>
-                </el-popover>
+                </el-popover> -->
                 <el-button type="primary" @click="savePdf" v-if="!isTrash">导出PDF</el-button>
+                <el-button type="primary" @click="cloneMd">克隆</el-button>
                 <el-button type="primary" @click="recoverMd" v-if="isTrash">恢复文档</el-button>
             </el-col>
         </el-row>
@@ -81,6 +95,9 @@
             },
             savePdf() {
                 window.open("/#/markdown/detail/" + this.$route.params["id"] + "?print=1", "print")
+            },
+            cloneMd() {
+                this.$router.push("/markdown/create?from_id=" + this.$route.params["id"]);
             }
         }
     }

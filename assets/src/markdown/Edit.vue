@@ -1,7 +1,9 @@
 <template>
     <el-row>
         <el-row>
-            <el-input v-model="title" placeholder="请输入内容"></el-input>
+            <el-col :span="12">
+                <el-input v-model="title" placeholder="请输入内容"></el-input>
+            </el-col>
         </el-row>
         <el-row style="margin-top: 20px;">
             <markdown-editor @inputMarkdown="setMdText" :initValue="mdtext" />
@@ -63,6 +65,7 @@ export default {
             this.title = res.title;
         },
         async updateArticle() {
+            clearTimeout(this.timer)
             let res = await this.$api.updateMd(
                 this.id,
                 this.title,
@@ -70,7 +73,10 @@ export default {
             );
             if (res.code == 0) {
                 this.$notify({
-                    message: '自动保存成功',
+                    title: '自动保存成功',
+                    duration : 1000,
+                    position: 'bottom-right',
+                    showClose: false,
                 });
                 //this.$router.push("/markdown/detail/" + this.id);
                 this.$emit("talk2SlieMenu", "create")

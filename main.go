@@ -31,11 +31,11 @@ func Cors() gin.HandlerFunc {
 
 func main() {
 
-	if _, err := os.Stat("./image"); os.IsNotExist(err) {
-		os.Mkdir("./image", 0777) //0777也可以os.ModePerm
-		os.Chmod("./image", 0777)
-	}
 	common.GetConfigInstance()
+	if _, err := os.Stat(*common.ImageDir); os.IsNotExist(err) {
+		os.Mkdir(*common.ImageDir, os.ModePerm) //0777也可以os.ModePerm
+		os.Chmod(*common.ImageDir, 0777)
+	}
 	router := gin.New()
 	router.Use(Cors())
 	router.Use(gin.Recovery())
@@ -74,7 +74,7 @@ func main() {
 		}
 	})
 
-	router.StaticFS("/image", http.Dir("./image"))
+	router.StaticFS("/image", http.Dir(*common.ImageDir))
 	router.POST("/markdown/upload_image", uploadImage)
 	router.POST("/markdown/create", CreateMd)
 	router.POST("/markdown/update", UpdateMd)
@@ -240,7 +240,7 @@ func uploadImage(ctx *gin.Context) {
 	dst := header.Filename
 	l := strings.Split(dst, ".")
 	md5Name := common.Md5Crypt([]byte(dst + common.GetNowDateTimeString()))
-	fullPath := fmt.Sprintf("./image/%s.%s", md5Name, l[1])
+	fullPath := fmt.Sprintf(*common.ImageDir+"/%s.%s", md5Name, l[1])
 
 	if err := ctx.SaveUploadedFile(header, fullPath); err != nil {
 		ctx.JSON(http.StatusOK, map[string]interface{}{
@@ -257,7 +257,7 @@ func uploadImage(ctx *gin.Context) {
 }
 
 func getImageList(ctx *gin.Context) {
-	fs, _ := ioutil.ReadDir("./image")
+	fs, _ := ioutil.ReadDir(*common.ImageDir)
 	list := []map[string]interface{}{}
 	for _, file := range fs {
 		t := file.ModTime()
@@ -266,6 +266,7 @@ func getImageList(ctx *gin.Context) {
 			"name":      file.Name(),
 			"create_at": ts,
 			"url":       "http://" + ctx.Request.Host + "/image/" + file.Name(),
+			"uri":       "/image/" + file.Name(),
 		})
 	}
 	ctx.JSON(http.StatusOK, map[string]interface{}{
@@ -288,7 +289,7 @@ func delUploadImg(ctx *gin.Context) {
 		return
 	}
 
-	filePath := "./image/" + pic.Name
+	filePath := *common.ImageDir + "/" + pic.Name
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		ctx.JSON(http.StatusOK, map[string]interface{}{
 			"code": -1,
