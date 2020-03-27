@@ -10,7 +10,7 @@
                 </el-main>
             </el-container>
         </el-container>
-        <el-row style="top:50px;position:fixed; right:30px;z-index:20000">
+        <el-row style="top:43px;position:fixed; right:30px;z-index:20000" v-if="!print">
             <el-button  size="mini"  type="primary" round @click="jumpTo('/markdown/create')">
                新建
             </el-button>
@@ -65,5 +65,10 @@ export default {
     }
 };
 </script>
-
+<style media="print">
+    @page {
+      size: auto;  /* auto is the initial value */
+      margin: 0mm; /* this affects the margin in the printer settings */
+    }
+</style>
 

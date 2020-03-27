@@ -1,10 +1,10 @@
 <template>
     <el-row>
         <h2>{{title}}<span style="display: inline-block;margin-left: 30px;">
-        <template v-if="!isTrash">
+        <template v-if="!isTrash && !print">
             <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="jumpEdit"></el-button>
         </template>
-        <el-popover placement="top" width="160" v-model="visible">
+        <el-popover placement="top" width="160" v-model="visible" v-if="!print">
             <p>确定删除该文档么？？</p>
             <div style="text-align: right; margin: 0">
                 <el-button size="mini" type="text" @click="visible = false">取消</el-button>
@@ -18,7 +18,7 @@
             <mavon-editor v-model="mdtext" :defaultOpen="'preview'" :subfield="false" :toolbarsFlag="false"
                 :codeStyle="'code-idea'" id="pdfId" />
         </el-row>
-        <el-row style="margin-top:30px;">
+        <el-row style="margin-top:30px;" v-if="!print">
             <el-col align="center">
                <!--  <template v-if="!isTrash">
                     <el-button type="warning" @click="jumpEdit" style="margin-right:20px;">修改</el-button>
@@ -51,6 +51,7 @@
                 title: "",
                 visible: false,
                 isTrash: false,
+                print : false,
             };
         },
         watch: {
@@ -59,6 +60,9 @@
             }
         },
         mounted() {
+            if(this.$route.query.print == 1) {
+                this.print = true
+            }
             this.getArticleDetail(this.$route.params["id"]);
         },
         methods: {
