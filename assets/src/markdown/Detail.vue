@@ -98,7 +98,7 @@
                 }
             },
             savePdf() {
-                window.open("/#/markdown/detail/" + this.$route.params["id"] + "?print=1", "print")
+                window.open("/#/markdown/detail/" + this.$route.params["id"] + "?print=1", "_blank")
             },
             cloneMd() {
                 this.$router.push("/markdown/create?from_id=" + this.$route.params["id"]);
