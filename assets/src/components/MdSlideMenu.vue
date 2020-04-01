@@ -95,7 +95,13 @@
                 } else {
                     jumpIndex = delIndex + 1
                 }
-                this.jumpMd(this.mdList[jumpIndex].id)
+
+                if(jumpIndex < 0) {
+                    this.jumpCreate()
+                } else {
+                    this.jumpMd(this.mdList[jumpIndex].id)
+                }
+                
                 setTimeout(() => {
                     this.getMdList()
                 }, 100)

@@ -79,7 +79,11 @@
             async deleteMd() {
                 let res = await this.$api.deleteMd(this.$route.params["id"]);
                 if (res.code == 0) {
-                    this.$message("删除成功");
+                    this.$message({
+                        message: '删除成功',
+                        type: 'success',
+                        duration : 1000
+                    });
                     if(this.isTrash) {
                         this.$router.push("/markdown/trash_list");
                     } else {
@@ -92,7 +96,11 @@
             async recoverMd() {
                 let res = await this.$api.recoverMd(this.$route.params["id"]);
                 if (res.code == 0) {
-                    this.$message("恢复成功");
+                    this.$message({
+                        message: '恢复成功',
+                        type: 'success',
+                        duration : 1000
+                    });
                     this.getArticleDetail(this.$route.params["id"])
                     this.$emit("talk2SlieMenu", "create");                    
                 }
