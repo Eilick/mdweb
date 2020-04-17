@@ -16,7 +16,7 @@
         </span></h2>
         <el-row style="margin-top: 20px;">
             <mavon-editor v-model="mdtext" :defaultOpen="'preview'" :subfield="false" :toolbarsFlag="false"
-                :codeStyle="'code-idea'" id="pdfId" />
+                :codeStyle="'androidstudio'" id="pdfId" />
         </el-row>
         <el-row style="margin-top:30px;" v-if="!print">
             <el-col align="center">
