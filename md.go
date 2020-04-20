@@ -36,6 +36,14 @@ func main() {
 		os.Mkdir(*common.ImageDir, os.ModePerm) //0777也可以os.ModePerm
 		os.Chmod(*common.ImageDir, 0777)
 	}
+
+	if _, err1 := os.Stat(*common.DbFile); err1 != nil {
+		database.GenerateDatabase(*common.DbFile)
+	}
+
+	_,err1 := os.Stat(*common.DbFile)
+	fmt.Println(err1, *common.DbFile)
+
 	router := gin.New()
 	router.Use(Cors())
 	router.Use(gin.Recovery())
@@ -94,6 +102,7 @@ type Markdown struct {
 	Title   string `json:"title"`
 	Content string `json:"content"`
 }
+
 
 func CreateMd(ctx *gin.Context) {
 	var md Markdown
