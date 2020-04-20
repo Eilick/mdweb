@@ -2,4 +2,5 @@
 /assets/yarn.lock
 /images
 /data.db
+/md
 *.toml
