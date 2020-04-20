@@ -33,16 +33,26 @@
                 setTimeout(() => {
                     this.getArticleDetail(this.$route.query.from_id)
                 }, 500)
-                
+            } else {
+                let mdtext = localStorage.getItem("mdtext")
+                if(mdtext != null && mdtext != "") {
+                    this.mdtext = mdtext
+                }
             }
         },
         methods: {
             setMdText(t) {
                 this.mdtext = t;
+                localStorage.setItem("mdtext", this.mdtext)
             },
             async createArticle() {
+                if(this.title == "") {
+                    this.$message("请赐个文章标题呀")
+                    return
+                }
                 let res = await this.$api.createMd(this.title, this.mdtext);
                 if (res.code == 0) {
+                    localStorage.setItem("mdtext", "")
                     this.$message("创建成功")
                     this.$router.push("/markdown/detail/" + res.id);
                     this.$emit("talk2SlieMenu", "create")
@@ -53,7 +63,7 @@
             },
             async getArticleDetail(id) {
                 let res = await this.$api.getMdDetail(id);
-                this.mdtext = res.content;
+                this.setMdText(res.content);
                 this.title = res.title;
                 document.title = res.title;
             },

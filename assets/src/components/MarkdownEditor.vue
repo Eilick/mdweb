@@ -1,6 +1,6 @@
 <template>
     <div>
-       <mavon-editor v-model="value" :ishljs="true" :toolbars="toolbars" @imgAdd="imgAdd" ref="md" codeStyle="androidstudio"/>
+       <mavon-editor v-model="value" :ishljs="true" :toolbars="toolbars" @imgAdd="imgAdd" ref="md" codeStyle="androidstudio" @save="ctrlSave"/>
     </div>
 </template>
 <script>
@@ -64,6 +64,9 @@ export default {
                 this.$refs.md.$img2Url(pos, "/image/" + res.file);
             }
             
+        },
+        ctrlSave() {
+          this.$emit('ctrlSave');
         }
     }
 }

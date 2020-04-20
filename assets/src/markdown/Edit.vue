@@ -6,7 +6,7 @@
             </el-col>
         </el-row>
         <el-row style="margin-top: 20px;">
-            <markdown-editor @inputMarkdown="setMdText" :initValue="mdtext" />
+            <markdown-editor @inputMarkdown="setMdText" :initValue="mdtext" @ctrlSave="updateArticle"/>
         </el-row>
 
         <el-row style="margin-top:30px;">
@@ -27,6 +27,7 @@
                 timer: null,
                 saveAt: 0,
                 editAt: 0,
+                editDist : 0,
             };
         },
         watch: {
@@ -40,10 +41,9 @@
                 if (old == "" || ne == "") {
                     return
                 }
-                if(Math.abs(ne.length - old.length) > 20 ) {
+                this.editDist += Math.abs(ne.length - old.length)
+                if( this.editDist > 30 ) {
                     this.updateArticle()
-                } else {
-                    this.editAt = this.getTs()
                 }
                 
             },
@@ -53,6 +53,9 @@
             this.getArticleDetail();
         },
         destroyed() {
+            if(this.editDist > 0) {
+                this.updateArticle()
+            }
             if (this.timer != null) {
                 clearInterval(this.timer)
             }
@@ -77,9 +80,10 @@
                 let res = await this.$api.getMdDetail(this.id);
                 this.mdtext = res.content;
                 this.title = res.title;
-                this.autoSave();
+                //this.autoSave();
             },
             async updateArticle() {
+                this.editDist = 0
                 let res = await this.$api.updateMd(
                     this.id,
                     this.title,
@@ -87,7 +91,7 @@
                 );
                 if (res.code == 0) {
                     this.$notify({
-                        title: '自动保存成功',
+                        title: '保存成功',
                         duration: 1000,
                         position: 'bottom-right',
                         showClose: false,
