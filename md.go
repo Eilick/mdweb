@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Eilick/mysql-client/common"
-	"github.com/Eilick/mysql-client/database"
+	"github.com/crackeer/mdweb/common"
+	"github.com/crackeer/mdweb/database"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gobuffalo/packr"

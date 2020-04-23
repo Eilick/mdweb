@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/Eilick/mysql-client/common"
+	"github.com/crackeer/mdweb/common"
 
 	_ "github.com/mattn/go-sqlite3"
 )

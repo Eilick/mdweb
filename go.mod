@@ -1,4 +1,4 @@
-module github.com/Eilick/mysql-client
+module github.com/crackeer/mdweb
 
 go 1.13
 
