@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <el-row>
+       <!--  <el-row>
             <el-upload class="upload-demo" ref="upload" action="/markdown/upload_image"
                 :on-remove="handleRemove" :file-list="fileList" :auto-upload="false" :limit="8" multiple
                 :on-exceed="handleExceed" list-type="picture-card" :on-success="handleSuccess">
@@ -8,7 +8,7 @@
                 <el-button style="margin-left: 10px;" size="large" type="success" @click="submitUpload">上传到服务器
                 </el-button>
             </el-upload>
-        </el-row>
+        </el-row> -->
         <h2 style="margin-top: 20px;">上传的图片列表</h2>
         <el-row style="margin-top: 20px;" :gutter="12">
             <template v-for="item in list">
@@ -75,11 +75,13 @@
                 let res = await this.$api.delImg(name);
                 if (res.code == 0) {
                     this.$message("删除成功")
-                    this.getImageList()
+                    this.list = this.list.filter((item) => {
+                        return item.name != name
+                    })
                 } else {
                     this.$message(res.msg || "删除失败")
                 }
-                this.list = lodash.orderBy(res.data, "create_at").reverse()
+                
             },
             submitUpload() {
                 this.$refs.upload.submit();
