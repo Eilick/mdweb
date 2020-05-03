@@ -61,7 +61,7 @@ export default {
         async imgAdd(pos, $file) {
             let res = await this.$api.uploadImage($file);
             if(res.code == 0) {
-                this.$refs.md.$img2Url(pos, "/markdown/image/" + res.file);
+                this.$refs.md.$img2Url(pos, "/image/" + res.file);
             }
             
         },

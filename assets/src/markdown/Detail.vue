@@ -29,7 +29,7 @@
       </el-col>
     </el-row>
     <el-row style="margin-top: 30px;">
-      <el-col align="center">
+      <el-col :offset="4" :span="16">
         <mavon-editor
           v-model="mdtext"
           :defaultOpen="'preview'"

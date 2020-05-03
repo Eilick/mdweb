@@ -3,7 +3,7 @@
     <el-container>
       <el-header v-if="!print">
         <el-menu
-          :default-active="'/markdown/list'"
+          :default-active="activeMenu"
           mode="horizontal"
           background-color="#545c64"
           text-color="#fff"
@@ -34,6 +34,7 @@ export default {
   name: "Md",
   data() {
     return {
+      activeMenu : "/markdown/list",
       print: false
     };
   },

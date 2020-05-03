@@ -34,17 +34,16 @@ func Cors() gin.HandlerFunc {
 func main() {
 
 	common.GetConfigInstance()
-	if _, err := os.Stat(*common.ImageDir); os.IsNotExist(err) {
-		os.Mkdir(*common.ImageDir, os.ModePerm) //0777也可以os.ModePerm
-		os.Chmod(*common.ImageDir, 0777)
-	}
+	/*
+		if _, err := os.Stat(*common.ImageDir); os.IsNotExist(err) {
+			os.Mkdir(*common.ImageDir, os.ModePerm) //0777也可以os.ModePerm
+			os.Chmod(*common.ImageDir, 0777)
+		}
+	*/
 
 	if _, err1 := os.Stat(*common.DbFile); err1 != nil {
 		database.GenerateDatabase(*common.DbFile)
 	}
-
-	_, err1 := os.Stat(*common.DbFile)
-	fmt.Println(err1, *common.DbFile)
 
 	router := gin.New()
 	router.Use(Cors())
@@ -94,7 +93,7 @@ func main() {
 	router.GET("/markdown/detail", SingleMd)
 	//router.GET("/markdown/images", getImageList)
 	router.POST("/markdown/del_image", delUploadImg)
-	router.GET("/markdown/image/:sign", getPicture)
+	router.GET("/image/:sign", getPicture)
 
 	router.Run(":" + *common.Port)
 

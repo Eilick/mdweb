@@ -6,7 +6,7 @@
           <el-card style="margin-top:10px;">
             <el-row>
               <el-col :span="21">
-                <b @click="jumpMd(item.id)" style="cursor:pointer ">{{item.title}}</b>
+                <b @click="jumpMd(item.id)" style="cursor:pointer ">{{item.title || "无"}}</b>
               </el-col>
               <el-col :span="3">{{item.create_at.substring(6,16)}}</el-col>
             </el-row>

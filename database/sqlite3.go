@@ -250,7 +250,6 @@ func GetImage(sign string) map[string]interface{} {
 	}
 
 	rows, err := tmpDb.Query(fmt.Sprintf("SELECT id,content,create_at FROM picture where sign = '%s'", sign))
-	fmt.Println(err)
 	if err != nil {
 		return map[string]interface{}{}
 	}
