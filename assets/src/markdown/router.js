@@ -5,7 +5,7 @@ import CreateMd from '@/markdown/Create'
 import UpdateMd from '@/markdown/Edit'
 
 import MdDetail from '@/markdown/Detail'
-import ImageList from '@/markdown/ImageList'
+import MdList from '@/markdown/MdList'
 import TrashMdList from '@/markdown/TrashMdList'
 
 Vue.use(Router)
@@ -15,12 +15,17 @@ const router = new Router({
         {
             path: '/',
             name: 'Home',
-            component: CreateMd,
+            component: MdList,
         },
         {
             path: '/markdown/create',
             name: 'CreateMd',
             component: CreateMd,
+        },
+        {
+            path: '/markdown/list',
+            name: 'MdList',
+            component: MdList,
         },
         {
             path: '/markdown/edit/:id',
@@ -31,11 +36,6 @@ const router = new Router({
             path: '/markdown/detail/:id',
             name: 'MdDetail',
             component: MdDetail,
-        },
-        {
-            path: '/markdown/images',
-            name: 'ImageList',
-            component: ImageList,
         },
         {
             path: '/markdown/trash_list',

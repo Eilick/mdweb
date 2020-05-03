@@ -12,6 +12,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gobuffalo/packr"
+
+	"encoding/base64"
 )
 
 func Cors() gin.HandlerFunc {
@@ -41,7 +43,7 @@ func main() {
 		database.GenerateDatabase(*common.DbFile)
 	}
 
-	_,err1 := os.Stat(*common.DbFile)
+	_, err1 := os.Stat(*common.DbFile)
 	fmt.Println(err1, *common.DbFile)
 
 	router := gin.New()
@@ -82,16 +84,17 @@ func main() {
 		}
 	})
 
-	router.StaticFS("/image", http.Dir(*common.ImageDir))
-	router.POST("/markdown/upload_image", uploadImage)
+	//router.StaticFS("/image", http.Dir(*common.ImageDir))
+	router.POST("/markdown/upload_image", uploadImage2Db)
 	router.POST("/markdown/create", CreateMd)
 	router.POST("/markdown/update", UpdateMd)
 	router.POST("/markdown/delete", DeleteMd)
 	router.POST("/markdown/recover", RecoverMd)
 	router.GET("/markdown/list", MdList)
 	router.GET("/markdown/detail", SingleMd)
-	router.GET("/markdown/images", getImageList)
+	//router.GET("/markdown/images", getImageList)
 	router.POST("/markdown/del_image", delUploadImg)
+	router.GET("/markdown/image/:sign", getPicture)
 
 	router.Run(":" + *common.Port)
 
@@ -102,7 +105,6 @@ type Markdown struct {
 	Title   string `json:"title"`
 	Content string `json:"content"`
 }
-
 
 func CreateMd(ctx *gin.Context) {
 	var md Markdown
@@ -263,6 +265,82 @@ func uploadImage(ctx *gin.Context) {
 		"file": fmt.Sprintf("%s.%s", md5Name, l[1]),
 	})
 	return
+}
+
+func uploadImage2Db(ctx *gin.Context) {
+	header, err := ctx.FormFile("file")
+	if err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	dst := header.Filename
+
+	md5Name := common.Md5Crypt([]byte(dst + common.GetNowDateTimeString()))
+
+	tmpFile, err := header.Open()
+
+	if err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+	imageBytes, err := ioutil.ReadAll(tmpFile)
+	if err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	//base64编码
+	codeStr := base64.StdEncoding.EncodeToString(imageBytes)
+
+	_, err = database.AddImage(codeStr, md5Name)
+
+	if err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"code": 0,
+		"file": md5Name,
+	})
+}
+
+func getPicture(ctx *gin.Context) {
+	name := ctx.Param("sign")
+
+	if name == "" {
+		ctx.Data(http.StatusOK, "image/jpeg", []byte{})
+		return
+	}
+
+	img := database.GetImage(name)
+	if len(img) < 1 {
+		ctx.Data(http.StatusOK, "image/jpeg", []byte{})
+		return
+	}
+
+	imgBase64Str := ""
+	if _, ok := img["content"]; ok {
+		imgBase64Str = img["content"].(string)
+	}
+
+	imgBytes, _ := base64.StdEncoding.DecodeString(imgBase64Str)
+
+	ctx.Data(http.StatusOK, "image/jpeg", imgBytes)
+
 }
 
 func getImageList(ctx *gin.Context) {

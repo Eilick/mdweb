@@ -1,8 +1,8 @@
 <template>
     <el-row>
         <el-row>
-            <el-col :span="12">
-                <el-input v-model="title" placeholder="请输入内容"></el-input>
+            <el-col :span="14" offset="5">
+                <el-input v-model="title" placeholder="请输入标题"></el-input>
             </el-col>
         </el-row>
 
@@ -55,8 +55,6 @@
                     localStorage.setItem("mdtext", "")
                     this.$message("创建成功")
                     this.$router.push("/markdown/detail/" + res.id);
-                    this.$emit("talk2SlieMenu", "create")
-                    //window.location.reload()
                 } else {
                     this.$message(res.message)
                 }

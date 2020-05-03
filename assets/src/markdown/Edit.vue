@@ -1,8 +1,8 @@
 <template>
     <el-row>
         <el-row>
-            <el-col :span="12">
-                <el-input v-model="title" placeholder="请输入内容"></el-input>
+            <el-col :span="14" :offset="5">
+                <el-input v-model="title" placeholder="请输入标题"></el-input>
             </el-col>
         </el-row>
         <el-row style="margin-top: 20px;">
@@ -97,7 +97,6 @@
                         showClose: false,
                     });
                     this.saveAt = this.getTs()
-                    this.$emit("talk2SlieMenu", "create")
                 } else {
                     this.$message(res.message);
                 }
@@ -109,7 +108,6 @@
                     this.mdtext
                 );
                 if (res.code == 0) {
-                    this.$emit("talk2SlieMenu", "create")
                     this.$message({
                         message: '保存成功',
                         type: 'success',
