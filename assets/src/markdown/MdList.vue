@@ -2,9 +2,8 @@
   <el-row>
     <el-col :span="16" :offset="4">
       <el-tabs :tab-position="'top'" v-model="classify" @tab-click="handleTabClick">
-        <el-tab-pane label="全部" name="全部"></el-tab-pane>
         <template v-for="c in classifyList">
-          <el-tab-pane :label="c" :name="c"></el-tab-pane>
+          <el-tab-pane :label="c" :name="c" :key="c"></el-tab-pane>
         </template>
         <el-tab-pane name="trash">
           <span slot="label">
@@ -40,6 +39,10 @@
         </el-timeline>
       </el-tabs>
     </el-col>
+
+    <el-col :span="2" :offset="1" style="padding-top:40px" :style="createBtnStyle">
+        <el-button size="medium" type="primary" @click="toJumpCreate">新建</el-button>
+    </el-col>
     <el-dialog title="移动到" :visible.sync="showMove" width="30%">
       <el-select
         v-model="classifyVal"
@@ -53,11 +56,6 @@
       </el-select>
       <el-button size="mini" type="info" style="margin-left:10px" @click="moveMd">确认</el-button>
     </el-dialog>
-    <el-row style="bottom:243px;position:fixed; right:30px;z-index:2000">
-      <router-link target="_blank" :to="{path:'/markdown/create'}">
-        <el-button size="medium" type="primary">新建</el-button>
-      </router-link>
-    </el-row>
   </el-row>
 </template>
 
@@ -68,17 +66,18 @@ export default {
     return {
       list: [],
       mdList: [],
-      classify: "全部",
+      classify: "",
       classifyList: [],
       showMove: false,
       classifyVal: "",
-      moveId: ""
+      moveId: "",
+      createBtnStyle: {}
     };
   },
   mounted() {
     document.title = "文档列表";
-    this.getMdList();
     this.getClassify();
+    window.addEventListener("scroll", this.handleScroll);
   },
   methods: {
     handleTabClick() {
@@ -99,6 +98,10 @@ export default {
     async getClassify() {
       let res = await this.$api.getClassify();
       this.classifyList = res;
+      if(this.classify == "0" && this.classifyList.length > 0) {
+          this.classify = this.classifyList[0]
+          this.getMdList()
+      }
     },
     toMoveMd(mdId, clas) {
       this.showMove = true;
@@ -112,8 +115,25 @@ export default {
         this.getMdList();
         this.getClassify();
       } else {
-        this.$message(res.message)
+        this.$message(res.message);
       }
+    },
+    handleScroll() {
+      var scrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop;
+
+      this.createBtnStyle = {
+        transform: "translateY(" + scrollTop + "px)"
+      };
+    },
+    toJumpCreate() {
+        let url = "/#/markdown/create"
+        if(this.classify != "trash") {
+            url = url + "?classify=" + this.classify
+        }
+        window.open(url, "_blank")
     }
   }
 };

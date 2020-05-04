@@ -90,6 +90,7 @@ func main() {
 	//router.GET("/markdown/images", getImageList)
 	router.POST("/markdown/del_image", delUploadImg)
 	router.GET("/image/:sign", getPicture)
+	router.GET("/markdown/downloaddb", downloadDb)
 
 	router.Run(":" + *common.Port)
 
@@ -214,6 +215,10 @@ func DeleteMd(ctx *gin.Context) {
 		"code": 0,
 		"id":   res,
 	})
+}
+
+func downloadDb(ctx *gin.Context) {
+	ctx.FileAttachment(*common.DbFile, "data.db")
 }
 
 func RecoverMd(ctx *gin.Context) {

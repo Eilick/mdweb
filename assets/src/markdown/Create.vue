@@ -64,6 +64,10 @@ export default {
         this.mdtext = mdtext;
       }
     }
+    if(this.$route.query.classify != undefined) {
+      this.classify = this.$route.query.classify
+    }
+     
   },
   methods: {
     setMdText(t) {

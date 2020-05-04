@@ -103,7 +103,7 @@ func GenMdById(id string, name string, dir string) {
 		fmt.Println("------正在导出文档里面的图片-------")
 		for i, n := range match {
 			fmt.Print("导出第", i+1, "张图片:")
-			ExportImage(n, dir+"/image")
+			ExportImage(n, *common.ExportMdDir+"/image")
 		}
 
 	}

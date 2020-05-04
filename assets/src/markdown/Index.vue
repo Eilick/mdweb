@@ -4,8 +4,10 @@
       <keep-alive>
         <router-view v-if="$route.meta.keepAlive" />
       </keep-alive>
-      <router-view v-if="!$route.meta.keepAlive" />
+      <router-view v-if="!$route.meta.keepAlive"/>
     </el-main>
+    
+    
   </el-row>
 </template>
 <script>
