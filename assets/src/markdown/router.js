@@ -6,7 +6,6 @@ import UpdateMd from '@/markdown/Edit'
 
 import MdDetail from '@/markdown/Detail'
 import MdList from '@/markdown/MdList'
-import TrashMdList from '@/markdown/TrashMdList'
 
 Vue.use(Router)
 
@@ -21,11 +20,17 @@ const router = new Router({
             path: '/markdown/create',
             name: 'CreateMd',
             component: CreateMd,
+            meta : {
+                keepAlive : true,
+            }
         },
         {
             path: '/markdown/list',
             name: 'MdList',
             component: MdList,
+            meta : {
+                keepAlive : true,
+            }
         },
         {
             path: '/markdown/edit/:id',
@@ -36,11 +41,6 @@ const router = new Router({
             path: '/markdown/detail/:id',
             name: 'MdDetail',
             component: MdDetail,
-        },
-        {
-            path: '/markdown/trash_list',
-            name: 'TrashMdList',
-            component: TrashMdList,
         },
     ]
 })

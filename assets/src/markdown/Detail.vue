@@ -91,11 +91,7 @@ export default {
           type: "success",
           duration: 1000
         });
-        if (this.isTrash) {
-          this.$router.push("/markdown/trash_list");
-        } else {
-          this.$router.push("/markdown/list");
-        }
+        this.$router.push("/markdown/list");
         this.visible = false;
       }
     },

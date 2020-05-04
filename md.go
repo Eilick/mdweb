@@ -34,12 +34,6 @@ func Cors() gin.HandlerFunc {
 func main() {
 
 	common.GetConfigInstance()
-	/*
-		if _, err := os.Stat(*common.ImageDir); os.IsNotExist(err) {
-			os.Mkdir(*common.ImageDir, os.ModePerm) //0777也可以os.ModePerm
-			os.Chmod(*common.ImageDir, 0777)
-		}
-	*/
 
 	if _, err1 := os.Stat(*common.DbFile); err1 != nil {
 		database.GenerateDatabase(*common.DbFile)
@@ -87,9 +81,11 @@ func main() {
 	router.POST("/markdown/upload_image", uploadImage2Db)
 	router.POST("/markdown/create", CreateMd)
 	router.POST("/markdown/update", UpdateMd)
+	router.POST("/markdown/move", MoveMd)
 	router.POST("/markdown/delete", DeleteMd)
 	router.POST("/markdown/recover", RecoverMd)
 	router.GET("/markdown/list", MdList)
+	router.GET("/markdown/classify", MdClassify)
 	router.GET("/markdown/detail", SingleMd)
 	//router.GET("/markdown/images", getImageList)
 	router.POST("/markdown/del_image", delUploadImg)
@@ -100,9 +96,10 @@ func main() {
 }
 
 type Markdown struct {
-	Id      string `json:"id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
+	Id       string `json:"id"`
+	Title    string `json:"title"`
+	Content  string `json:"content"`
+	Classify string `json:"classify"`
 }
 
 func CreateMd(ctx *gin.Context) {
@@ -115,7 +112,7 @@ func CreateMd(ctx *gin.Context) {
 		return
 	}
 
-	id, err := database.AddArticle(md.Title, md.Content)
+	id, err := database.AddArticle(md.Title, md.Content, md.Classify)
 
 	if err != nil {
 		ctx.JSON(http.StatusOK, map[string]interface{}{
@@ -143,6 +140,33 @@ func UpdateMd(ctx *gin.Context) {
 	}
 
 	id, err := database.UpdateMd(md.Id, md.Title, md.Content)
+
+	if err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"code": 0,
+		"id":   id,
+	})
+
+}
+
+func MoveMd(ctx *gin.Context) {
+	var md Markdown
+	if err := ctx.BindJSON(&md); err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	id, err := database.MoveMd(md.Id, md.Classify)
 
 	if err != nil {
 		ctx.JSON(http.StatusOK, map[string]interface{}{
@@ -222,7 +246,16 @@ func RecoverMd(ctx *gin.Context) {
 func MdList(ctx *gin.Context) {
 
 	s := ctx.DefaultQuery("list_type", "ok")
-	list := database.ArticleList(s)
+	c := ctx.DefaultQuery("classify", "全部")
+	list := database.ArticleList(s, c)
+
+	ctx.JSON(http.StatusOK, list)
+
+}
+
+func MdClassify(ctx *gin.Context) {
+
+	list := database.GetArticleClassify()
 
 	ctx.JSON(http.StatusOK, list)
 

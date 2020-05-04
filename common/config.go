@@ -23,3 +23,17 @@ func GetConfigInstance() {
 	})
 	return
 }
+
+var ExportMdDir *string
+var BaseImageUrl *string
+
+func GetToolConfigInstance() {
+	cfgOnce.Do(func() {
+		DbFile = flag.String("db", "./data.db", "database file")
+		ExportMdDir = flag.String("export-md-dir", "./outputs", "export md dir dir")
+		BaseImageUrl = flag.String("base-url", "/", "base image url")
+		flag.Parse()
+
+	})
+	return
+}

@@ -1,14 +1,19 @@
 import request from './request-base' //引入axios的封装方法
 
 export default {
-    createMd: (title, content) => {
+    createMd: (title, content, classify) => {
         return request('post', '/markdown/create', {
-            title, content
+            title, content, classify
         })
     },
     updateMd: (id, title, content) => {
         return request('post', '/markdown/update', {
             id, title, content
+        })
+    },
+    moveMd: (id, classify) => {
+        return request('post', '/markdown/move', {
+            id, classify
         })
     },
     deleteMd: (id) => {
@@ -21,10 +26,14 @@ export default {
             id
         })
     },
-    getMdList: (listType) => {
+    getMdList: (listType, classify) => {
         return request('get', '/markdown/list', {
-            list_type : listType
+            list_type : listType,
+            classify : classify,
         })
+    },
+    getClassify: () => {
+        return request('get', '/markdown/classify')
     },
     getImageList: () => {
         return request('get', '/markdown/images')

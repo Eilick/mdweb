@@ -13,7 +13,7 @@ func GetDb() string {
 	return *common.DbFile
 }
 
-func AddArticle(title, content string) (int64, error) {
+func AddArticle(title, content, classify string) (int64, error) {
 
 	tmpDb, err := sql.Open("sqlite3", GetDb())
 
@@ -21,14 +21,14 @@ func AddArticle(title, content string) (int64, error) {
 		panic(err)
 	}
 
-	stmt, err := tmpDb.Prepare("INSERT INTO markdown(title, content, show_status, create_at, update_at) values(?, ?, ?, ?, ?)")
+	stmt, err := tmpDb.Prepare("INSERT INTO markdown(title, content, classify,show_status, create_at, update_at) values(?, ?, ?, ?, ?, ?)")
 
 	if err != nil {
 		return 0, err
 	}
 
 	nowTime := common.GetNowDateTimeString()
-	res, err := stmt.Exec(title, content, 0, nowTime, nowTime)
+	res, err := stmt.Exec(title, content, classify, 0, nowTime, nowTime)
 	stmt.Close()
 	tmpDb.Close()
 	if err != nil {
@@ -55,6 +55,29 @@ func UpdateMd(id, title, content string) (bool, error) {
 
 	nowTime := common.GetNowDateTimeString()
 	_, err = stmt.Exec(title, content, nowTime, id)
+	stmt.Close()
+	tmpDb.Close()
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+func MoveMd(id, classify string) (bool, error) {
+
+	tmpDb, err := sql.Open("sqlite3", GetDb())
+
+	if err != nil {
+		panic(err)
+	}
+
+	stmt, err := tmpDb.Prepare("UPDATE markdown SET classify=? WHERE id= ? ")
+	if err != nil {
+		return false, err
+	}
+
+	_, err = stmt.Exec(classify, id)
 	stmt.Close()
 	tmpDb.Close()
 	if err != nil {
@@ -135,7 +158,7 @@ func RecoverMd(id string) (bool, error) {
 	return true, nil
 }
 
-func ArticleList(listStatus string) []map[string]interface{} {
+func ArticleList(listStatus string, classify string) []map[string]interface{} {
 	tmpDb, err := sql.Open("sqlite3", GetDb())
 
 	if err != nil {
@@ -146,7 +169,12 @@ func ArticleList(listStatus string) []map[string]interface{} {
 	if listStatus == "trash" {
 		showStatus = -1
 	}
-	sqlStr := fmt.Sprintf("SELECT id, title, create_at,update_at FROM markdown where show_status=%d order by update_at desc", showStatus)
+
+	sqlStr := fmt.Sprintf("SELECT id, title,classify, create_at,update_at FROM markdown where show_status=%d order by update_at desc", showStatus)
+	if classify != "全部" {
+		sqlStr = fmt.Sprintf("SELECT id, title, classify, create_at,update_at FROM markdown where show_status=%d and classify='%s' order by update_at desc", showStatus, classify)
+	}
+
 	rows, err := tmpDb.Query(sqlStr)
 
 	if err != nil {
@@ -156,16 +184,45 @@ func ArticleList(listStatus string) []map[string]interface{} {
 	list := []map[string]interface{}{}
 	for rows.Next() {
 		title := ""
-		id := 0
+		id := ""
 		createAt := ""
 		updateAt := ""
-		if err := rows.Scan(&id, &title, &createAt, &updateAt); err == nil {
+		clas := ""
+		if err := rows.Scan(&id, &title, &clas, &createAt, &updateAt); err == nil {
 			list = append(list, map[string]interface{}{
 				"id":        id,
 				"title":     title,
+				"classify":  clas,
 				"create_at": createAt,
 				"update_at": updateAt,
 			})
+		}
+	}
+	rows.Close()
+	tmpDb.Close()
+
+	return list
+}
+
+func GetArticleClassify() []string {
+	tmpDb, err := sql.Open("sqlite3", GetDb())
+
+	if err != nil {
+		panic(err)
+	}
+
+	sqlStr := fmt.Sprintf("SELECT distinct classify FROM markdown")
+	rows, err := tmpDb.Query(sqlStr)
+
+	if err != nil {
+		return []string{}
+	}
+
+	list := []string{}
+	for rows.Next() {
+		classify := ""
+		if err := rows.Scan(&classify); err == nil {
+			list = append(list, classify)
 		}
 	}
 	rows.Close()
@@ -182,7 +239,7 @@ func SingleArticle(id string) map[string]interface{} {
 		panic(err)
 	}
 
-	rows, err := tmpDb.Query(fmt.Sprintf("SELECT id,title,content,create_at,update_at,show_status FROM markdown where id = %s", id))
+	rows, err := tmpDb.Query(fmt.Sprintf("SELECT id,title,content,classify, create_at,update_at,show_status FROM markdown where id = %s", id))
 
 	if err != nil {
 		return map[string]interface{}{}
@@ -195,8 +252,9 @@ func SingleArticle(id string) map[string]interface{} {
 		content := ""
 		createAt := ""
 		updateAt := ""
+		classify := ""
 		showStatus := 0
-		if err := rows.Scan(&id, &title, &content, &createAt, &updateAt, &showStatus); err == nil {
+		if err := rows.Scan(&id, &title, &content, &classify, &createAt, &updateAt, &showStatus); err == nil {
 			data = map[string]interface{}{
 				"id":          id,
 				"title":       title,
@@ -204,6 +262,7 @@ func SingleArticle(id string) map[string]interface{} {
 				"update_at":   updateAt,
 				"create_at":   createAt,
 				"show_status": showStatus,
+				"classify":    classify,
 			}
 			break
 		}

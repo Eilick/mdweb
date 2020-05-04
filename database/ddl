@@ -4,8 +4,9 @@ CREATE TABLE markdown(
     content text,
     show_status int,
     create_at char(64),
-    modify_at char(64)
-    , update_at char(60)
+    modify_at char(64), 
+    update_at char(60),
+    classify TEXT DEFAULT 无 NOT NULL
 );
 
 CREATE TABLE picture (
