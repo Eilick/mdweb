@@ -10,5 +10,5 @@ markdown编辑器web端
 
 ## 使用
 ```
-./md --port=8877 --db=./data.db --imagedir=./images
+./md --port=8877 --db=./data.db
 ```
