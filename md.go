@@ -49,11 +49,13 @@ func main() {
 
 	if md, err := box.Find("index.html"); err == nil {
 		router.GET("/", func(ctx *gin.Context) {
+			ctx.Header("Cache-Control", "private, max-age=86400")
 			ctx.Data(http.StatusOK, "text/html", md)
 		})
 	}
 	router.GET("/css/:name", func(ctx *gin.Context) {
 		name := ctx.Param("name")
+		ctx.Header("Cache-Control", "private, max-age=86400")
 		if css, err := box.Find("css/" + name); err == nil {
 			ctx.Data(http.StatusOK, "text/css", css)
 		} else {
@@ -62,6 +64,7 @@ func main() {
 	})
 	router.GET("/fonts/:name", func(ctx *gin.Context) {
 		name := ctx.Param("name")
+		ctx.Header("Cache-Control", "private, max-age=86400")
 		if css, err := box.Find("fonts/" + name); err == nil {
 			ctx.Data(http.StatusOK, "text/css", css)
 		} else {
@@ -70,6 +73,7 @@ func main() {
 	})
 	router.GET("/js/:name", func(ctx *gin.Context) {
 		name := ctx.Param("name")
+		ctx.Header("Cache-Control", "private, max-age=86400")
 		if css, err := box.Find("js/" + name); err == nil {
 			ctx.Data(http.StatusOK, "application/javascript", css)
 		} else {

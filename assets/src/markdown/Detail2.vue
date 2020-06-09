@@ -38,7 +38,7 @@
             </el-col>
         </el-row>
         <el-row style="margin-top: 30px;">
-            <el-col :offset="4" :span="16">
+            <el-col>
                 <mavon-editor
                     v-model="mdtext"
                     :defaultOpen="'preview'"
@@ -63,32 +63,22 @@
 export default {
     data() {
         return {
+            id : 0,
             mdtext: "",
             title: "",
             visible: false,
             isTrash: false,
-            print: false
         };
     },
-    watch: {
-        $route: function() {
-            this.getArticleDetail(this.$route.params["id"]);
-        }
-    },
-    mounted() {
-        if (this.$route.query.print == 1) {
-            this.print = true;
-        }
-        if (this.$route.params.id != undefined) {
-            this.getArticleDetail(this.$route.params["id"]);
-        }
-    },
     methods: {
+        initArticle(id) {
+            this.id = 0;
+            this.getArticleDetail(id)
+        },
         async getArticleDetail(id) {
             let res = await this.$api.getMdDetail(id);
             this.mdtext = res.content;
             this.title = res.title;
-            document.title = res.title;
             this.isTrash = res.show_status < 0;
         },
         jumpEdit() {
