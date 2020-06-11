@@ -12,8 +12,9 @@
                     :defaultOpen="'preview'"
                     :subfield="false"
                     :toolbarsFlag="false"
-                    :codeStyle="'androidstudio'"
+                    :codeStyle="'obsidian'"
                     id="pdfId"
+                    :boxShadow="false"
                 />
             </el-col>
         </el-row>

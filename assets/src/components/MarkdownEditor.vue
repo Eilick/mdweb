@@ -1,6 +1,6 @@
 <template>
     <div>
-       <mavon-editor v-model="value" :ishljs="true" :toolbars="toolbars" @imgAdd="imgAdd" ref="md" codeStyle="androidstudio" @save="ctrlSave"/>
+       <mavon-editor v-model="value" :ishljs="true" :toolbars="toolbars" @imgAdd="imgAdd" ref="md" codeStyle="obsidian" @save="ctrlSave"/>
     </div>
 </template>
 <script>
