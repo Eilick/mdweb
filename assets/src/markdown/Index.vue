@@ -1,6 +1,6 @@
 <template>
   <el-row id="app">
-    <el-backtop></el-backtop>
+    <el-backtop :right="20"></el-backtop>
     <el-main style="margin-bottom: 200px;">
       <keep-alive>
         <router-view v-if="$route.meta.keepAlive" />
