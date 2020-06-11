@@ -211,7 +211,7 @@ func GetArticleClassify() []string {
 		panic(err)
 	}
 
-	sqlStr := fmt.Sprintf("SELECT distinct classify FROM markdown")
+	sqlStr := fmt.Sprintf("SELECT distinct classify FROM markdown where show_status=0")
 	rows, err := tmpDb.Query(sqlStr)
 
 	if err != nil {

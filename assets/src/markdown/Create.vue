@@ -1,11 +1,12 @@
 <template>
     <el-row>
         <el-row>
-            <el-col :span="14" :offset="5">
+            <el-col :span="12">
                 <el-input v-model="title" placeholder="请输入标题"></el-input>
             </el-col>
 
-            <el-col :span="3" :offset="2">
+            <el-col :span="5" :offset="1">
+                分类
                 <el-select
                     v-model="classify"
                     filterable
@@ -17,14 +18,7 @@
                     <el-option v-for="item in options" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
             </el-col>
-        </el-row>
-
-        <el-row style="margin-top: 20px;">
-            <markdown-editor @inputMarkdown="setMdText" :initValue="mdtext" />
-        </el-row>
-
-        <el-row style="margin-top:30px;">
-            <el-col align="center">
+            <el-col :span="2" :offset="4" align="right">
                 <el-button
                     type="warning"
                     size="large"
@@ -32,6 +26,14 @@
                     style="margin-right:20px;"
                 >创建</el-button>
             </el-col>
+        </el-row>
+
+        <el-row style="margin-top: 20px;">
+            <markdown-editor @inputMarkdown="setMdText" :initValue="mdtext" />
+        </el-row>
+
+        <el-row style="margin-top:30px;">
+            <el-col align="center"></el-col>
         </el-row>
     </el-row>
 </template>

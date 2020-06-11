@@ -20,10 +20,10 @@
                         >
                             <el-card>
                                 <el-row style="padding-top:5px">
-                                    <el-col :span="16">
+                                    <el-col :span="14" style="padding:10px">
                                         <span
                                             @click="displayArticle(item)"
-                                            style="cursor:pointer;font-size:16px;font-weight:bold;text-decoration: none;color:#CC9966;display:inline-block;"
+                                            style="cursor:pointer;font-size:16px;font-weight:bold;text-decoration: none;color:#CC9966;line-height:20px"
                                         >{{item.title || "无"}}</span>
                                         <el-tag
                                             type="info"
@@ -32,14 +32,25 @@
                                             style="margin-left:10px"
                                         >{{ item.classify }}</el-tag>
                                     </el-col>
-                                    <el-col :span="8" align="right">
+                                    <el-col :span="10" align="right">
                                         <el-button
                                             type="text"
-                                            size="medium"
                                             icon="el-icon-s-unfold"
                                             @click="toMoveMd(item.id, item.classify)"
                                             v-if="classify != 'trash'"
                                         >分类</el-button>
+                                         <el-button
+                                            type="text"
+                                            icon="el-icon-edit"
+                                            @click="jumpEdit(item.id)"
+                                            v-if="classify != 'trash'"
+                                        >修改</el-button>
+                                        <el-button
+                                            type="text"
+                                            icon="el-icon-view"
+                                            @click="showSingle(item.id)"
+                                            v-if="classify != 'trash'"
+                                        >查看</el-button>
                                         <el-button
                                             type="text"
                                             icon="el-icon-copy-document"
@@ -53,13 +64,7 @@
                                         <el-button
                                             type="text"
                                             icon="el-icon-edit"
-                                            @click="jumpEdit(item.id)"
-                                            v-if="classify != 'trash'"
-                                        >修改</el-button>
-                                        <el-button
-                                            type="text"
-                                            icon="el-icon-edit"
-                                            @click="jumpEdit(item.id)"
+                                            @click="recoverMd(item.id)"
                                             v-if="classify == 'trash'"
                                         >恢复</el-button>
                                         <el-button
@@ -96,7 +101,7 @@
 
         <el-dialog
             :visible.sync="showArticle"
-            width="60%"
+            width="75%"
             top="5vh"
             ref="articleDetail"
             @close="handleClose"
@@ -132,12 +137,17 @@ export default {
         document.title = "文档列表";
         this.getClassify();
         window.addEventListener("scroll", this.handleScroll);
-        window.addEventListener("storage", () => {
-            this.getMdList()
-        }, false)
+        window.addEventListener(
+            "storage",
+            () => {
+                this.getClassify()
+                this.getMdList();
+            },
+            false
+        );
 
-        if(this.$route.query.classify != undefined) {
-            this.classify = this.$route.query.classify
+        if (this.$route.query.classify != undefined) {
+            this.classify = this.$route.query.classify;
             this.handleTabClick();
         }
     },
@@ -148,9 +158,26 @@ export default {
             } else {
                 this.getMdList();
             }
-            this.$router.push({path : '/',query: {
-                classify : this.classify,
-            }})
+            this.$router.push({
+                path: "/",
+                query: {
+                    classify: this.classify
+                }
+            });
+        },
+        reloadPage() {
+            if (this.classify == "trash") {
+                this.getTrashMdList();
+            } else {
+                this.getMdList();
+            }
+            this.$router.push({
+                path: "/",
+                query: {
+                    classify: this.classify
+                }
+            });
+            this.getClassify();
         },
         async getTrashMdList() {
             let res = await this.$api.getMdList("trash");
@@ -163,9 +190,9 @@ export default {
         async getClassify() {
             let res = await this.$api.getClassify();
             this.classifyList = res;
-            if (this.classify == "" && this.classifyList.length > 0) {
+            if (this.classifyList.indexOf(this.classify) < 0 && this.classifyList.length > 0 && this.classify != "trash") {
                 this.classify = this.classifyList[0];
-                this.this.handleTabClick();
+                this.handleTabClick();
             }
         },
         toMoveMd(mdId, clas) {
@@ -226,8 +253,11 @@ export default {
             let routeData = this.$router.resolve("/markdown/edit/" + id);
             window.open(routeData.href, "_blank");
         },
+        showSingle(id) {
+           let routeData = this.$router.resolve("/markdown/detail/" + id);
+            window.open(routeData.href, "_blank");
+        },
         deleteArticle(article) {
-            console.log(article)
             let msg = "确认将该文章放入回收站嘛";
             if (this.classify == "trash") {
                 msg = "确认彻底删除该文章?";
@@ -248,7 +278,18 @@ export default {
                     type: "success",
                     duration: 1000
                 });
-                this.handleTabClick();
+                this.reloadPage();
+            }
+        },
+        async recoverMd(id) {
+            let res = await this.$api.recoverMd(id);
+            if (res.code == 0) {
+                this.$message({
+                    message: "恢复成功",
+                    type: "success",
+                    duration: 1000
+                });
+                this.reloadPage()
             }
         }
     }
