@@ -1,24 +1,28 @@
 <template>
     <el-row class="edit">
         <el-row>
-            <el-col :span="12">
+            <el-col :span="10" :offset="7">
                 <el-input v-model="title" placeholder="请输入标题"></el-input>
-            </el-col>
-            <el-col :span="2" :offset="10" align="right">
-                <el-button
-                    type="warning"
-                    size="large"
-                    @click="saveArticle"
-                    style="margin-right:20px;"
-                >保存并退出</el-button>
             </el-col>
         </el-row>
         <el-row style="margin-top: 20px;">
-            <markdown-editor
-                @inputMarkdown="setMdText"
-                :initValue="mdtext"
-                @ctrlSave="updateArticle"
-            />
+            <el-col :span="22" :offset="1">
+                <markdown-editor
+                    @inputMarkdown="setMdText"
+                    :initValue="mdtext"
+                    @ctrlSave="updateArticle"
+                />
+            </el-col>
+        </el-row>
+        <el-row style="top:40px;right:20px;position:fixed;z-index:88888;">
+            <el-button circle @click="updateArticle" type="primary">
+                <i class="el-icon-refresh"></i>
+            </el-button>
+        </el-row>
+        <el-row style="top:100px;right:20px;position:fixed;z-index:88888;">
+            <el-button circle @click="saveArticle" type="warning">
+                <i class="el-icon-finished"></i>
+            </el-button>
         </el-row>
     </el-row>
 </template>
@@ -85,7 +89,6 @@ export default {
             let res = await this.$api.getMdDetail(this.id);
             this.mdtext = res.content;
             this.title = res.title;
-            //this.autoSave();
         },
         async updateArticle() {
             this.editDist = 0;
@@ -114,17 +117,19 @@ export default {
             );
             if (res.code == 0) {
                 this.editDist = 0;
-                this.$message({
-                    message: "保存成功",
+                this.$notify({
+                    title: "保存成功",
                     type: "success",
-                    duration: 1000
+                    duration: 500,
+                    position: "bottom-right",
+                    showClose: false,
                 });
                 this.$router.push("/markdown/detail/" + this.id);
             } else {
-                this.$message({
-                    message: res.message,
+                this.$notify({
+                    title: res.message,
                     type: "danger",
-                    duration: 1000
+                    duration: 500
                 });
             }
         }

@@ -1,39 +1,37 @@
 <template>
     <el-row>
         <el-row>
-            <el-col :span="12">
+            <el-col :span="10" :offset="7">
                 <el-input v-model="title" placeholder="请输入标题"></el-input>
             </el-col>
 
             <el-col :span="5" :offset="1">
-                分类
                 <el-select
                     v-model="classify"
                     filterable
                     allow-create
                     default-first-option
                     placeholder="请选择文章分类"
-                    size="small"
                 >
                     <el-option v-for="item in options" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
             </el-col>
-            <el-col :span="2" :offset="4" align="right">
-                <el-button
-                    type="warning"
-                    size="large"
-                    @click="createArticle"
-                    style="margin-right:20px;"
-                >创建</el-button>
-            </el-col>
         </el-row>
 
         <el-row style="margin-top: 20px;">
-            <markdown-editor @inputMarkdown="setMdText" :initValue="mdtext" />
+            <el-col :span="22" :offset="1">
+                <markdown-editor
+                    @inputMarkdown="setMdText"
+                    :initValue="mdtext"
+                    @ctrlSave="createArticle"
+                />
+            </el-col>
         </el-row>
 
-        <el-row style="margin-top:30px;">
-            <el-col align="center"></el-col>
+        <el-row style="top:40px;right:20px;position:fixed;z-index:88888;">
+            <el-button circle @click="createArticle" type="warning">
+                <i class="el-icon-finished"></i>
+            </el-button>
         </el-row>
     </el-row>
 </template>

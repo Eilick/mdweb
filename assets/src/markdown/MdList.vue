@@ -81,9 +81,15 @@
             </el-tabs>
         </el-col>
 
-        <el-col :span="2" :offset="1" style="padding-top:40px" :style="createBtnStyle">
+         <el-row style="top:40px;right:20px;position:fixed;z-index:88888">
+            <el-button @click="toJumpCreate" circle type="primary">
+                <i class="el-icon-plus"></i>
+            </el-button>
+        </el-row>
+
+        <!-- <el-col :span="2" :offset="1" style="padding-top:40px" :style="createBtnStyle">
             <el-button size="medium" type="primary" @click="toJumpCreate">新建</el-button>
-        </el-col>
+        </el-col> -->
 
         <el-dialog title="移动到" :visible.sync="showMove" width="30%">
             <el-select
@@ -136,7 +142,7 @@ export default {
     mounted() {
         document.title = "文档列表";
         this.getClassify();
-        window.addEventListener("scroll", this.handleScroll);
+        //window.addEventListener("scroll", this.handleScroll);
         window.addEventListener(
             "storage",
             () => {

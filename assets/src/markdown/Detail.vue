@@ -18,8 +18,8 @@
                 />
             </el-col>
         </el-row>
-        <el-row style="top:20px;right:20px;position:fixed;z-index:88888" v-if="showHome">
-            <el-button @click="jumpHome" circle>
+        <el-row style="top:40px;right:20px;position:fixed;z-index:88888" v-if="showHome">
+            <el-button @click="jumpHome" circle type="primary">
                 <i class="el-icon-s-home"></i>
             </el-button>
         </el-row>
