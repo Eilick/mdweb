@@ -6,7 +6,7 @@
             </el-col>
         </el-row>
         <el-row style="margin-top: 30px;">
-            <el-col>
+            <el-col :span="22" :offset="1">
                 <mavon-editor
                     v-model="mdtext"
                     :defaultOpen="'preview'"
@@ -18,10 +18,10 @@
                 />
             </el-col>
         </el-row>
-        <el-row style="margin-top:30px;" v-if="!print">
-            <el-col align="center">
-                <el-button type="primary" @click="recoverMd" v-if="isTrash">恢复文档</el-button>
-            </el-col>
+        <el-row style="top:20px;right:20px;position:fixed;z-index:88888" v-if="showHome">
+            <el-button @click="jumpHome">
+                <i class="el-icon-s-home"></i>
+            </el-button>
         </el-row>
     </el-row>
 </template>
@@ -33,14 +33,17 @@ export default {
             id: 0,
             mdtext: "",
             title: "",
+            classify : '',
             isTrash: false,
-            print: false
+            print: false,
+            showHome : false,
         };
     },
     mounted() {
         if (this.$route.params.id != undefined) {
-            this.id = this.$route.params["id"]
+            this.id = this.$route.params["id"];
             this.getArticleDetail(this.id, true);
+            this.showHome = true
         }
     },
     methods: {
@@ -48,14 +51,20 @@ export default {
             this.id = id;
             this.getArticleDetail(id);
         },
+        jumpHome() {
+            this.$router.push({path : '/', query : {
+                classify : this.classify
+            }})
+        },
         async getArticleDetail(id, single) {
             let res = await this.$api.getMdDetail(id);
             this.mdtext = res.content;
             this.title = res.title;
-            if(single == true) {
-                document.title = this.title
+            if (single == true) {
+                document.title = this.title;
             }
-            
+            this.classify = res.classify
+
             this.isTrash = res.show_status < 0;
         },
         async recoverMd() {

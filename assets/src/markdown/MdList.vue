@@ -102,7 +102,7 @@
         <el-dialog
             :visible.sync="showArticle"
             width="75%"
-            top="5vh"
+            top="10vh"
             ref="articleDetail"
             @close="handleClose"
         >
