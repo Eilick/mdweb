@@ -10,5 +10,5 @@ go build md.go
 ./md --port=8888
 
 ## 预览
-
+![preview](./image/preview.png)
 
