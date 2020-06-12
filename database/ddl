@@ -1,0 +1,17 @@
+CREATE TABLE markdown(
+    id integer primary key,
+    title text,
+    content text,
+    show_status int,
+    create_at char(64),
+    modify_at char(64), 
+    update_at char(60),
+    classify TEXT DEFAULT 无 NOT NULL
+);
+
+CREATE TABLE picture (
+	id INTEGER  primary key,
+	content TEXT NOT NULL,
+	sign TEXT NOT NULL,
+	create_at TEXT NOT NULL
+);

@@ -1,0 +1,6 @@
+/assets/node_modules
+/assets/yarn.lock
+/image
+/data.db
+/md
+*.toml
