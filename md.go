@@ -331,7 +331,9 @@ func uploadImage2Db(ctx *gin.Context) {
 		})
 		return
 	}
+
 	imageBytes, err := ioutil.ReadAll(tmpFile)
+
 	if err != nil {
 		ctx.JSON(http.StatusOK, map[string]interface{}{
 			"code":    -1,
@@ -342,6 +344,11 @@ func uploadImage2Db(ctx *gin.Context) {
 
 	//base64编码
 	codeStr := base64.StdEncoding.EncodeToString(imageBytes)
+
+	data := common.UploadPicture(header.Filename, &tmpFile)
+
+	ctx.JSON(http.StatusOK, data)
+	return
 
 	_, err = database.AddImage(codeStr, md5Name)
 
