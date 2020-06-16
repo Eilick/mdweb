@@ -39,7 +39,7 @@
                                             @click="toMoveMd(item.id, item.classify)"
                                             v-if="classify != 'trash'"
                                         >分类</el-button>
-                                         <el-button
+                                        <el-button
                                             type="text"
                                             icon="el-icon-edit"
                                             @click="jumpEdit(item.id)"
@@ -81,7 +81,7 @@
             </el-tabs>
         </el-col>
 
-         <el-row style="top:40px;right:20px;position:fixed;z-index:88888">
+        <el-row style="top:40px;right:20px;position:fixed;z-index:88888">
             <el-button @click="toJumpCreate" circle type="primary">
                 <i class="el-icon-plus"></i>
             </el-button>
@@ -89,7 +89,7 @@
 
         <!-- <el-col :span="2" :offset="1" style="padding-top:40px" :style="createBtnStyle">
             <el-button size="medium" type="primary" @click="toJumpCreate">新建</el-button>
-        </el-col> -->
+        </el-col>-->
 
         <el-dialog title="移动到" :visible.sync="showMove" width="30%">
             <el-select
@@ -146,7 +146,7 @@ export default {
         window.addEventListener(
             "storage",
             () => {
-                this.getClassify()
+                this.getClassify();
                 this.getMdList();
             },
             false
@@ -196,7 +196,11 @@ export default {
         async getClassify() {
             let res = await this.$api.getClassify();
             this.classifyList = res;
-            if (this.classifyList.indexOf(this.classify) < 0 && this.classifyList.length > 0 && this.classify != "trash") {
+            if (
+                this.classifyList.indexOf(this.classify) < 0 &&
+                this.classifyList.length > 0 &&
+                this.classify != "trash"
+            ) {
                 this.classify = this.classifyList[0];
                 this.handleTabClick();
             }
@@ -240,27 +244,32 @@ export default {
             this.handleTabClick();
         },
         toJumpCreate() {
-            let url = "/#/markdown/create";
-            if (this.classify != "trash") {
-                url = url + "?classify=" + this.classify;
-            }
-            window.open(url, "_blank");
+            this.$router.push({
+                path: "/markdown/create",
+                query: {
+                    classify: this.classify
+                }
+            });
         },
         cloneMd(id, c) {
-            let routeData = this.$router.resolve(
-                "/markdown/create?from_id=" + id + "&classify=" + this.classify
-            );
-            window.open(routeData.href, "_blank");
+            this.$router.push({
+                path: "/markdown/create",
+                query: {
+                    classify: this.classify,
+                    from_id: id
+                }
+            });
         },
         savePdf(id) {
             window.open("/#/markdown/detail/" + id + "?print=1", "_blank");
         },
         jumpEdit(id) {
-            let routeData = this.$router.resolve("/markdown/edit/" + id);
-            window.open(routeData.href, "_blank");
+            this.$router.push({
+                path: "/markdown/edit/" + id,
+            });
         },
         showSingle(id) {
-           let routeData = this.$router.resolve("/markdown/detail/" + id);
+            let routeData = this.$router.resolve("/markdown/detail/" + id);
             window.open(routeData.href, "_blank");
         },
         deleteArticle(article) {
@@ -295,7 +304,7 @@ export default {
                     type: "success",
                     duration: 1000
                 });
-                this.reloadPage()
+                this.reloadPage();
             }
         }
     }

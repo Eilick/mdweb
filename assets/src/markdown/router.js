@@ -21,15 +21,7 @@ const router = new Router({
             name: 'CreateMd',
             component: CreateMd,
             meta : {
-                keepAlive : true,
-            }
-        },
-        {
-            path: '/markdown/list',
-            name: 'MdList',
-            component: MdList,
-            meta : {
-                keepAlive : true,
+                keepAlive : false,
             }
         },
         {

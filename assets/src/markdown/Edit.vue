@@ -89,6 +89,7 @@ export default {
             let res = await this.$api.getMdDetail(this.id);
             this.mdtext = res.content;
             this.title = res.title;
+            document.title = this.title
         },
         async updateArticle() {
             this.editDist = 0;
