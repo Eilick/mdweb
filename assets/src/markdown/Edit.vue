@@ -57,10 +57,6 @@ export default {
             }
         }
     },
-    mounted() {
-        this.id = this.$route.params["id"];
-        this.getArticleDetail();
-    },
     destroyed() {
         if (this.editDist > 0) {
             this.updateArticle();
@@ -84,6 +80,10 @@ export default {
                     this.updateArticle();
                 }
             }, 8000);
+        },
+        initArticle(id) {
+            this.id = id;
+            this.getArticleDetail(id);
         },
         async getArticleDetail() {
             let res = await this.$api.getMdDetail(this.id);
@@ -125,7 +125,8 @@ export default {
                     position: "bottom-right",
                     showClose: false,
                 });
-                this.$router.push("/markdown/detail/" + this.id);
+                this.$emit("reloadList")
+                //this.$router.push("/markdown/detail/" + this.id);
             } else {
                 this.$notify({
                     title: res.message,
