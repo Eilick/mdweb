@@ -45,7 +45,7 @@ export default {
               /* 2.2.1 */
               subfield: false, // 单双栏模式
               preview: true, // 预览
-              fontSize : '11px',
+              fontSize : '12px',
             }
     	}
     },

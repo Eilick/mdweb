@@ -1,5 +1,5 @@
 <template>
-  <el-row>
+  <el-row style="margin-top:20px;">
     <el-col :span="18" :offset="2">
       <el-tabs :tab-position="'left'" v-model="classify" @tab-click="handleTabClick">
         <template v-for="c in classifyList">
@@ -7,56 +7,61 @@
         </template>
         <el-tab-pane name="trash">
           <span slot="label">
-            <i class="el-icon-delete"></i>已删除文档
+            <i class="el-icon-delete"></i>回收站
           </span>
         </el-tab-pane>
-        <el-row v-if="classify != 'trash'">
-          <el-button @click="toJumpCreate(0)" type="primary" size="small" style="float: right">
-            <i class="el-icon-plus"></i>
-          </el-button>
-        </el-row>
-        <el-divider></el-divider>
         <template v-for="(item, i) in mdList">
-          <el-row :key="i">
-            <el-col :span="12" style="padding:10px">
-              <span
-                @click="displayArticle(item)"
-                style="cursor:pointer;font-size:16px;font-weight:bold;text-decoration: none;color:#CC9966;line-height:20px"
-              >{{item.title || "无"}}</span>
-              <el-tag
-                type="info"
-                effect="dark"
-                size="mini"
-                style="margin-left:10px"
-              >{{ item.classify }}</el-tag>
-            </el-col>
-            <el-col :span="12" align="right">
-              <el-button
-                type="text"
-                icon="el-icon-s-unfold"
-                @click="toMoveMd(item.id, item.classify)"
-                v-if="classify != 'trash'"
-              >分类</el-button>
-              <el-button
-                type="text"
-                icon="el-icon-edit"
-                @click="jumpEdit(item.id)"
-                v-if="classify != 'trash'"
-              >修改</el-button>
-              <el-button type="text" icon="el-icon-copy-document" @click="toJumpCreate(item.id)">复制</el-button>
-              <el-button type="text" icon="el-icon-s-promotion" @click="savePdf(item.id)">pdf</el-button>
-              <el-button
-                type="text"
-                icon="el-icon-edit"
-                @click="recoverMd(item.id)"
-                v-if="classify == 'trash'"
-              >恢复</el-button>
-              <el-button type="text" icon="el-icon-delete" @click="deleteArticle(item)">删除</el-button>
-            </el-col>
-          </el-row>
-          <el-divider></el-divider>
+          <el-card :key="i" style="margin-bottom:10px;padding:0px;">
+            <el-row>
+              <el-col :span="12" style="padding:10px">
+                <span
+                  @click="displayArticle(item)"
+                  style="cursor:pointer;font-size:16px;font-weight:bold;text-decoration: none;color:#CC9966;line-height:20px"
+                >{{item.title || "无"}}</span>
+                <el-tag
+                  type="info"
+                  effect="dark"
+                  size="mini"
+                  style="margin-left:10px"
+                >{{ item.classify }}</el-tag>
+              </el-col>
+              <el-col :span="12" align="right">
+                <el-button
+                  type="text"
+                  icon="el-icon-s-unfold"
+                  @click="toMoveMd(item.id, item.classify)"
+                  v-if="classify != 'trash'"
+                >分类</el-button>
+                <el-button
+                  type="text"
+                  icon="el-icon-edit"
+                  @click="jumpEdit(item.id)"
+                  v-if="classify != 'trash'"
+                >修改</el-button>
+
+                <el-button
+                  type="text"
+                  icon="el-icon-copy-document"
+                  @click="toJumpCreate(item.id)"
+                >复制</el-button>
+                <el-button type="text" icon="el-icon-s-promotion" @click="savePdf(item.id)">pdf</el-button>
+                <el-button
+                  type="text"
+                  icon="el-icon-edit"
+                  @click="recoverMd(item.id)"
+                  v-if="classify == 'trash'"
+                >恢复</el-button>
+                <el-button type="text" icon="el-icon-delete" @click="deleteArticle(item)">删除</el-button>
+              </el-col>
+            </el-row>
+          </el-card>
         </template>
       </el-tabs>
+    </el-col>
+    <el-col :span="2" v-if="classify != 'trash'" :offset="1">
+      <el-button @click="toJumpCreate(0)" type="primary" size="small">
+        <i class="el-icon-plus"></i>
+      </el-button>
     </el-col>
 
     <el-dialog title="移动到" :visible.sync="showMove" width="30%">
@@ -80,13 +85,13 @@
     </el-drawer>
 
     <el-drawer :visible.sync="showCreate" size="80%" :with-header="false">
-      <el-row style="height: calc(100vh - 0px);overflow:scroll;padding-top:5px;">
+      <el-row style="height: calc(100vh - 0px);overflow:scroll;padding-top:35px;">
         <Create ref="Create" @reloadList="reloadList" />
       </el-row>
     </el-drawer>
 
     <el-drawer :visible.sync="showEdit" size="80%" :with-header="false">
-      <el-row style="height: calc(100vh - 0px);overflow:scroll;padding-top:5px;">
+      <el-row style="height: calc(100vh - 0px);overflow:scroll;padding-top:35px;">
         <Edit ref="Edit" @reloadList="reloadList" />
       </el-row>
     </el-drawer>

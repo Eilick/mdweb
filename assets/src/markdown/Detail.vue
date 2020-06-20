@@ -2,7 +2,7 @@
     <el-row>
         <el-row style="margin-top:10px;margin-bottom:5px;">
             <el-col align="center">
-                <h2>{{title}}</h2>
+                <h4>{{title}}</h4>
             </el-col>
         </el-row>
         <el-row style="margin-top: 30px;">

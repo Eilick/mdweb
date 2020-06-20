@@ -1,24 +1,29 @@
 <template>
   <el-row>
     <el-row>
-      <el-col :span="10" :offset="1">
-        <el-input v-model="title" placeholder="请输入标题"></el-input>
-      </el-col>
-
-      <el-col :span="5" :offset="1">
-        <el-select
-          v-model="classify"
-          filterable
-          allow-create
-          default-first-option
-          placeholder="请选择文章分类"
-        >
-          <el-option v-for="item in options" :key="item" :label="item" :value="item"></el-option>
-        </el-select>
+      <el-col :span="22" :offset="1">
+        <el-form :inline="true">
+          <el-form-item label="标题">
+            <el-input v-model="title" placeholder="请输入标题" size="small" style="width: 400px"></el-input>
+          </el-form-item>
+          <el-form-item label="分类">
+            <el-select
+              v-model="classify"
+              filterable
+              allow-create
+              default-first-option
+              placeholder="请选择文章分类"
+              size="small"
+              style="width: 130px"
+            >
+              <el-option v-for="item in options" :key="item" :label="item" :value="item"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
       </el-col>
     </el-row>
 
-    <el-row style="margin-top: 20px;">
+    <el-row>
       <el-col :span="22" :offset="1">
         <markdown-editor @inputMarkdown="setMdText" :initValue="mdtext" @ctrlSave="createArticle" />
       </el-col>
@@ -56,15 +61,15 @@ export default {
       localStorage.setItem("mdtext", this.mdtext);
     },
     cloneArticle(id, classify) {
-        if(id > 0) {
-            this.getArticleDetail(id);
-        } else {
-            this.classify = classify
-            this.title = moment().format("YYYY-MM-DD HH:mm")
-            if(localStorage.getItem("mdtext") != null) {
-                this.mdtext = localStorage.getItem("mdtext")
-            }
+      if (id > 0) {
+        this.getArticleDetail(id);
+      } else {
+        this.classify = classify;
+        this.title = moment().format("YYYY-MM-DD HH:mm");
+        if (localStorage.getItem("mdtext") != null) {
+          this.mdtext = localStorage.getItem("mdtext");
         }
+      }
     },
     async getArticleDetail(id, single) {
       let res = await this.$api.getMdDetail(id);
@@ -85,7 +90,7 @@ export default {
       if (res.code == 0) {
         localStorage.setItem("mdtext", "");
         this.$message("创建成功");
-        this.$emit("reloadList")
+        this.$emit("reloadList");
       } else {
         this.$message(res.message);
       }
