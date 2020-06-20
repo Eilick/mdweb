@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import moment from "moment"
 export default {
     props: ["articleId"],
     data() {
@@ -62,6 +63,7 @@ export default {
             if (mdtext != null && mdtext != "") {
                 this.mdtext = mdtext;
             }
+            this.title = moment().format('YYYY-MM-DD HH:mm')
         }
         if (this.$route.query.classify != undefined) {
             this.classify = this.$route.query.classify;
