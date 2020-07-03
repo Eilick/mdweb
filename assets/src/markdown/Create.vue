@@ -29,7 +29,7 @@
       </el-col>
     </el-row>
 
-    <el-row style="top:40px;right:20px;position:fixed;z-index:88888;">
+    <el-row style="top:100px;right:20px;position:fixed;z-index:88888;">
       <el-button circle @click="createArticle" type="warning">
         <i class="el-icon-finished"></i>
       </el-button>

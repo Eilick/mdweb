@@ -14,12 +14,12 @@
         <markdown-editor @inputMarkdown="setMdText" :initValue="mdtext" @ctrlSave="updateArticle" />
       </el-col>
     </el-row>
-    <el-row style="top:40px;right:20px;position:fixed;z-index:88888;">
+    <el-row style="top:50px;right:20px;position:fixed;z-index:88888;">
       <el-button circle @click="updateArticle" type="primary">
         <i class="el-icon-refresh"></i>
       </el-button>
     </el-row>
-    <el-row style="top:100px;right:20px;position:fixed;z-index:88888;">
+    <el-row style="top:120px;right:20px;position:fixed;z-index:88888;">
       <el-button circle @click="saveArticle" type="warning">
         <i class="el-icon-finished"></i>
       </el-button>
@@ -79,7 +79,7 @@ export default {
         if (this.saveAt < this.editAt) {
           this.updateArticle();
         }
-      }, 8000);
+      }, 5000);
     },
     initArticle(id) {
       this.id = id;
@@ -107,6 +107,8 @@ export default {
       }
     },
     async saveArticle() {
+      this.editDist = 0;
+      this.timer = null
       let res = await this.$api.updateMd(this.id, this.title, this.mdtext);
       if (res.code == 0) {
         this.editDist = 0;
@@ -118,7 +120,6 @@ export default {
           showClose: false
         });
         this.$emit("reloadList");
-        //this.$router.push("/markdown/detail/" + this.id);
       } else {
         this.$notify({
           title: res.message,

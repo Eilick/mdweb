@@ -78,23 +78,17 @@
       <el-button size="mini" type="info" style="margin-left:10px" @click="moveMd">确认</el-button>
     </el-dialog>
 
-    <el-drawer :visible.sync="showArticle" size="75%" :with-header="false">
-      <el-row style="height: calc(100vh - 0px);overflow:scroll;padding-top:5px;">
-        <Detail ref="Detail" @reloadList="reloadList" />
-      </el-row>
-    </el-drawer>
+    <el-dialog :visible.sync="showArticle"  :fullscreen="true" :show-close="false">
+        <Detail ref="Detail" @reloadList="reloadList" @jumpEdit="jumpEditFromDetail"/>
+    </el-dialog>
 
-    <el-drawer :visible.sync="showCreate" size="80%" :with-header="false">
-      <el-row style="height: calc(100vh - 0px);overflow:scroll;padding-top:35px;">
+    <el-dialog :visible.sync="showCreate"  :fullscreen="true"  :close-on-press-escape="false">
         <Create ref="Create" @reloadList="reloadList" />
-      </el-row>
-    </el-drawer>
+    </el-dialog>
 
-    <el-drawer :visible.sync="showEdit" size="80%" :with-header="false">
-      <el-row style="height: calc(100vh - 0px);overflow:scroll;padding-top:35px;">
+    <el-dialog :visible.sync="showEdit" :fullscreen="true" :show-close="false" :close-on-press-escape="false">
         <Edit ref="Edit" @reloadList="reloadList" />
-      </el-row>
-    </el-drawer>
+    </el-dialog>
   </el-row>
 </template>
 
@@ -226,6 +220,10 @@ export default {
     },
     savePdf(id) {
       window.open("/#/markdown/detail/" + id + "?print=1", "_blank");
+    },
+    jumpEditFromDetail(id) {
+        this.reloadList()
+        this.jumpEdit(id)
     },
     jumpEdit(id) {
       this.showEdit = true;
