@@ -1,6 +1,7 @@
 <template>
   <el-row>
     <el-row>
+      <div id="vditor"></div>
       <el-col :span="22" :offset="1">
         <el-form :inline="true">
           <el-form-item label="标题">
@@ -39,6 +40,8 @@
 
 <script>
 import moment from "moment";
+import Vditor from 'vditor'
+import "vditor/src/assets/scss/index.scss"
 export default {
   props: ["articleId"],
   data() {
@@ -46,11 +49,23 @@ export default {
       mdtext: "",
       title: "",
       classify: "普通",
-      options: []
+      options: [],
+      contentEditor:null,
     };
   },
   mounted() {
     this.getClassify();
+    this.contentEditor = new Vditor('vditor', {
+      toolbarConfig: {
+        pin: true,
+      },
+      cache: {
+        enable: false,
+      },
+      after: () => {
+        this.contentEditor.setValue('hello, Vditor + Vue!')
+      },
+    })
   },
   methods: {
     setClassify(c) {
