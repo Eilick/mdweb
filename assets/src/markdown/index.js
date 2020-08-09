@@ -1,6 +1,6 @@
 
 import Vue from 'vue'
-import App from './Index.vue'
+import App from './Index1.vue'
 import router from './router.js'
 
 import Export2Excel from '@/assets/js/Export2Excel.js';
