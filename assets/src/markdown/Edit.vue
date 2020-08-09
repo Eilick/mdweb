@@ -28,7 +28,7 @@
                 saveAt: 0,
                 editAt: 0,
                 editDist: 0,
-                contentEditor: null,
+                classify : ""
             };
         },
         watch: {
@@ -84,6 +84,7 @@
                 let res = await this.$api.getMdDetail(this.id);
                 this.mdtext = res.content;
                 this.title = res.title;
+                this.classify = res.classify
                 document.title = this.title;
                 this.$refs.MD.setValue(this.mdtext)
             },
@@ -115,6 +116,12 @@
                         position: "bottom-right",
                         showClose: false
                     });
+                    this.$router.push({
+                        path : "/markdown/list", 
+                        query : {
+                            classify : this.classify,
+                        }
+                    })
                 } else {
                     this.$notify({
                         title: res.message,
