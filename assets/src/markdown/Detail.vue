@@ -5,7 +5,7 @@
                 <strong style="font-size: 20px;">{{title}}</strong>
             </el-col>
         </el-row>
-        <el-row style="margin-top: 70px;">
+        <el-row style="margin-top: 20px;">
             <el-col :span="22" :offset="1">
                 <div id="detail"></div>
             </el-col>

@@ -81,6 +81,16 @@ func main() {
 		}
 	})
 
+	router.GET("/img/:name", func(ctx *gin.Context) {
+		name := ctx.Param("name")
+		ctx.Header("Cache-Control", "private, max-age=86400")
+		if css, err := box.Find("img/" + name); err == nil {
+			ctx.Data(http.StatusOK, "image/*", css)
+		} else {
+			ctx.Data(http.StatusOK, "image/*", []byte(""))
+		}
+	})
+
 	//router.StaticFS("/image", http.Dir(*common.ImageDir))
 	router.POST("/markdown/upload_image", uploadImage2Db)
 	router.POST("/markdown/create", CreateMd)
@@ -318,7 +328,6 @@ func uploadImage2Db(ctx *gin.Context) {
 		return
 	}
 	fmt.Println(header)
-
 
 	dst := header.Filename
 

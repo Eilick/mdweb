@@ -13,37 +13,12 @@
 </template>
 
 <script>
-    const LinkConf = {
-        "create-dev": "/#/markdown/create",
-        "create-online": "/#/",
-    };
     export default {
-        name: "myheader",
-        props: ["userName", "contentType", "userType"],
-        
-        computed: {
-            env: function () {
-                if (
-                    window.location.host.indexOf("localhost") > -1 ||
-                    window.location.host.indexOf("127.0.0.1") > -1 ||  window.location.host.indexOf(":8080")  > -1
-                ) {
-                    return "dev";
-                }
-                return "online";
-            }
-        },
+        name: "myheader",        
         methods: {
             jump(type) {
                 if (type == "create") {
-                    window.location.href = LinkConf[type + "-" + this.env];
-                    return;
-                }
-                if (type == "wiki") {
-                    window.open("http://docs.realsee.tech/")
-                    return false
-                } else if (type == "logout") {
-                    window.location.href =
-                        "/user/logout";
+                   this.$router.push("/markdown/create")
                 }
             },
         }
