@@ -317,6 +317,8 @@ func uploadImage2Db(ctx *gin.Context) {
 		})
 		return
 	}
+	fmt.Println(header)
+
 
 	dst := header.Filename
 

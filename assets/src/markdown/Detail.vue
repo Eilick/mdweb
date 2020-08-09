@@ -2,10 +2,10 @@
   <el-row>
     <el-row style="margin-top:10px;margin-bottom:5px;">
       <el-col align="center">
-        <h4>{{title}}</h4>
+        <strong style="font-size: 20px;">{{title}}</strong>
       </el-col>
     </el-row>
-    <el-row style="margin-top: 30px;">
+    <el-row style="margin-top: 10px;">
       <el-col :span="22" :offset="1">
         <mavon-editor
           v-model="mdtext"

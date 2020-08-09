@@ -10,8 +10,8 @@
             <i class="el-icon-delete"></i>回收站
           </span>
         </el-tab-pane>
-        <template v-for="(item, i) in mdList">
-          <el-card :key="i" style="margin-bottom:10px;padding:0px;">
+        <template v-for="(item, i) in mdList" style="margin-bottom:10px;">
+          <el-card :key="i" :body-style="{paddingTop : '5px', paddingBottom : '5px'}" style="margin-bottom:10px;">
             <el-row>
               <el-col :span="12" style="padding:10px">
                 <span
@@ -59,7 +59,7 @@
       </el-tabs>
     </el-col>
     <el-col :span="2" v-if="classify != 'trash'" :offset="1">
-      <el-button @click="toJumpCreate(0)" type="primary" size="small">
+      <el-button @click="toJumpCreate(0)" type="primary" size="mini" circle>
         <i class="el-icon-plus"></i>
       </el-button>
     </el-col>
@@ -78,15 +78,15 @@
       <el-button size="mini" type="info" style="margin-left:10px" @click="moveMd">确认</el-button>
     </el-dialog>
 
-    <el-dialog :visible.sync="showArticle"  :fullscreen="true" :show-close="false">
-        <Detail ref="Detail" @reloadList="reloadList" @jumpEdit="jumpEditFromDetail"/>
+    <el-dialog :visible.sync="showArticle" :close-on-click-modal="false" width="70%" top="5vh" custom-class="idialog">
+        <Detail ref="Detail" @reloadList="reloadList" @jumpEdit="jumpEditFromDetail"/>       
     </el-dialog>
 
-    <el-dialog :visible.sync="showCreate"  :fullscreen="true"  :close-on-press-escape="false">
+    <el-dialog :visible.sync="showCreate" :close-on-click-modal="false" width="70%" top="5vh" custom-class="idialog">
         <Create ref="Create" @reloadList="reloadList" />
     </el-dialog>
 
-    <el-dialog :visible.sync="showEdit" :fullscreen="true" :show-close="false" :close-on-press-escape="false">
+    <el-dialog :visible.sync="showEdit"  :close-on-click-modal="false" width="70%" top="5vh" custom-class="idialog">
         <Edit ref="Edit" @reloadList="reloadList" />
     </el-dialog>
   </el-row>
@@ -273,3 +273,8 @@ export default {
   }
 };
 </script>
+<style>
+  .idialog .el-dialog__body{
+    padding: 0;
+  }
+</style>
