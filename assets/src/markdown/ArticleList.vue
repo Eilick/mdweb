@@ -1,6 +1,6 @@
 <template>
     <el-row style="margin-top:20px;">
-        <el-col :span="18" :offset="2">
+        <el-col :span="20" :offset="2">
             <template v-for="(item, i) in mdList" style="margin-bottom:10px;">
                 <el-card :key="i"  style="margin-bottom:10px;">
                     <el-row>
@@ -35,7 +35,7 @@
             <el-button size="mini" type="info" style="margin-left:10px" @click="moveMd">确认</el-button>
         </el-dialog>
 
-        <el-dialog :visible.sync="showArticle" :close-on-click-modal="false" width="70%" top="5vh"
+        <el-dialog :visible.sync="showArticle" width="70%" top="5vh"
             custom-class="idialog">
             <Detail ref="Detail" />
         </el-dialog>

@@ -1,31 +1,41 @@
 <template>
     <el-row>
-        <el-row>
-
-
-
-
-            <el-col :span="22" :offset="1">
-                <el-form :inline="true">
-                    <el-form-item label="标题">
-                        <el-input v-model="title" placeholder="请输入标题" size="small" style="width: 400px"></el-input>
-                    </el-form-item>
-                    <el-form-item label="分类">
-                        <el-select v-model="classify" filterable allow-create default-first-option placeholder="请选择文章分类"
-                            size="small" style="width: 130px">
-                            <el-option v-for="item in options" :key="item" :label="item" :value="item"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-form>
+        <el-row style="margin-bottom: 20px;">
+            <el-col :span="12" :offset="6">
+                <el-input v-model="title" placeholder="请输入标题"></el-input>
             </el-col>
-        </el-row>
 
+        </el-row>
+        <el-row style="margin-bottom: 20px;">
+            <el-radio-group v-model="classify" size="small">
+                <template v-for="item in options">
+                    <el-radio :label="item"></el-radio>
+                </template>
+            </el-radio-group>
+            <el-popover placement="right-end" width="250" v-model="visible">
+                <el-row :gutter="10">
+                    <el-col :span="17">
+                        <el-input v-model="title" placeholder="请输入分类" size="mini"></el-input>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button @click="createArticle" type="primary" size="mini">确认</el-button>
+                    </el-col>
+                </el-row>
+                <el-button slot="reference" icon="el-icon-plus" size="mini" style="margin-left: 40px;" type="info">添加分类
+                </el-button>
+            </el-popover>
+
+        </el-row>
         <div id="vditor"></div>
 
-        <el-row style="top:100px;right:20px;position:fixed;z-index:88888;">
-            <el-button circle @click="createArticle" type="warning">
-                <i class="el-icon-finished"></i>
-            </el-button>
+
+        <el-row style="margin-top:20px;">
+            <el-col align="center">
+                <el-button @click="createArticle" type="primary">
+                    创建
+                </el-button>
+            </el-col>
+
         </el-row>
     </el-row>
 </template>
@@ -59,7 +69,7 @@
                     this.contentEditor.setValue('hello, Vditor + Vue!')
                 },
                 upload: {
-                    fieldName : "file",
+                    fieldName: "file",
                     url: "http://127.0.0.1:8888/markdown/upload_image",//文件上传路径 
                     success: function (textarea, msg) {//textarea 
                         //将返回的信息传为json对象 
@@ -68,10 +78,10 @@
                         if (msg.code === 0) {//请求成功 
                             console.log(that.contentEditor)
                             that.contentEditor.tip("SUccess", 100)
-                            let content = '!['+msg.file + '](http://127.0.0.1:8888/image/' + msg.file + ')'
+                            let content = '![' + msg.file + '](http://127.0.0.1:8888/image/' + msg.file + ')'
                             //插入上传文件后的markdown代码 
                             that.contentEditor.insertValue(content, true)
-                            
+
                         } else {//请求失败 
                             this.$message("上传失败")
                         }
@@ -111,13 +121,14 @@
                 }
                 let res = await this.$api.createMd(
                     this.title,
-                    this.mdtext,
-                    this.classify
+                    this.contentEditor.getValue(),
+                    this.classify,
+
                 );
                 if (res.code == 0) {
                     localStorage.setItem("mdtext", "");
                     this.$message("创建成功");
-                    this.$emit("reloadList");
+                    this.$router.push("/markdown/list?classify=" + this.classify)
                 } else {
                     this.$message(res.message);
                 }
