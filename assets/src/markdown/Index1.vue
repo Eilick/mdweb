@@ -5,14 +5,14 @@
                 <myheader></myheader>
             </el-header>
             <el-container>
-                <el-aside :width="showSlideMenu ? open : close">
-                    <slidemenu :list="classifyList"></slidemenu>
+                <el-aside width="200px">
+                    <slidemenu  ref="SlideMenu"></slidemenu>
                 </el-aside>
                 <el-main style="margin-bottom: 200px;">
                     <keep-alive>
-                        <router-view v-if="$route.meta.keepAlive" />
+                        <router-view v-if="$route.meta.keepAlive" @updateSlieMenu="getClassify"/>
                     </keep-alive>
-                    <router-view v-if="!$route.meta.keepAlive" />
+                    <router-view v-if="!$route.meta.keepAlive"  @updateSlieMenu="getClassify" />
                 </el-main>
             </el-container>
         </el-container>
@@ -24,18 +24,11 @@
     import slideMenu from "@/components/SlideMenu";
 
     import "@/assets/css/index.css";
-
-    import moment from "moment";
-
     export default {
         name: "index",
         data() {
             return {
-                close: "64px",
-                open: "200px",
                 headerHeight: "60px",
-                showSlideMenu: true,
-                classifyList: []
             };
         },
         components: {
@@ -43,25 +36,10 @@
             slidemenu: slideMenu
         },
         methods: {
-
-            expand(flag) {
-                this.$set(this, "showSlideMenu", flag);
-            }, 
             async getClassify() {
                 let res = await this.$api.getClassify();
-                this.classifyList = res;
-                if (
-                    this.classifyList.indexOf(this.classify) < 0 &&
-                    this.classifyList.length > 0 &&
-                    this.classify != "trash"
-                ) {
-                    this.classify = this.classifyList[0];
-                    this.handleTabClick();
-                }
+                this.$refs.SlideMenu.setMenu(res)
             },
-            async getList() {
-                
-            }
         },
 
         mounted() {

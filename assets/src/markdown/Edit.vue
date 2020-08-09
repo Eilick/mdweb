@@ -1,28 +1,18 @@
 <template>
     <el-row class="edit">
-        <el-row>
-            <el-col :span="22" :offset="1">
-                <el-form :inline="true">
-                    <el-form-item label="标题">
-                        <el-input v-model="title" placeholder="请输入标题" size="small" style="width: 400px"></el-input>
-                    </el-form-item>
-                </el-form>
+        <el-row style="margin-bottom: 20px;">
+            <el-col :span="12" :offset="6">
+                <el-input v-model="title" placeholder="请输入标题"></el-input>
             </el-col>
         </el-row>
-        <el-row>
-            <el-col :span="22" :offset="1">
-                <markdown-editor @inputMarkdown="setMdText" :initValue="mdtext" @ctrlSave="updateArticle" />
+
+        <markdown ref="MD"></markdown>
+
+        <el-row style="margin-top:70px;">
+            <el-col align="center">
+                <el-button @click="updateArticle" type="primary" size="mini">保存</el-button>
+                <el-button @click="saveArticle" type="success" size="mini">保存并退出</el-button>
             </el-col>
-        </el-row>
-        <el-row style="top:50px;right:20px;position:fixed;z-index:88888;">
-            <el-button circle @click="updateArticle" type="primary">
-                <i class="el-icon-refresh"></i>
-            </el-button>
-        </el-row>
-        <el-row style="top:120px;right:20px;position:fixed;z-index:88888;">
-            <el-button circle @click="saveArticle" type="warning">
-                <i class="el-icon-finished"></i>
-            </el-button>
         </el-row>
     </el-row>
 </template>
@@ -37,7 +27,8 @@
                 timer: null,
                 saveAt: 0,
                 editAt: 0,
-                editDist: 0
+                editDist: 0,
+                contentEditor: null,
             };
         },
         watch: {
@@ -94,10 +85,11 @@
                 this.mdtext = res.content;
                 this.title = res.title;
                 document.title = this.title;
+                this.$refs.MD.setValue(this.mdtext)
             },
             async updateArticle() {
                 this.editDist = 0;
-                let res = await this.$api.updateMd(this.id, this.title, this.mdtext);
+                let res = await this.$api.updateMd(this.id, this.title, this.$refs.MD.getValue());
                 if (res.code == 0) {
                     this.$notify({
                         title: "保存成功",
@@ -113,7 +105,7 @@
             async saveArticle() {
                 this.editDist = 0;
                 this.timer = null
-                let res = await this.$api.updateMd(this.id, this.title, this.mdtext);
+                let res = await this.$api.updateMd(this.id, this.title, this.$refs.MD.getValue());
                 if (res.code == 0) {
                     this.editDist = 0;
                     this.$notify({
@@ -123,7 +115,6 @@
                         position: "bottom-right",
                         showClose: false
                     });
-                    this.$emit("reloadList");
                 } else {
                     this.$notify({
                         title: res.message,

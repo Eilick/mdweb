@@ -7,31 +7,33 @@
 
         </el-row>
         <el-row style="margin-bottom: 20px;">
-            <el-radio-group v-model="classify" size="small">
-                <template v-for="item in options">
-                    <el-radio :label="item"></el-radio>
-                </template>
-            </el-radio-group>
-            <el-popover placement="right-end" width="250" v-model="visible">
-                <el-row :gutter="10">
-                    <el-col :span="17">
-                        <el-input v-model="title" placeholder="请输入分类" size="mini"></el-input>
-                    </el-col>
-                    <el-col :span="3">
-                        <el-button @click="createArticle" type="primary" size="mini">确认</el-button>
-                    </el-col>
-                </el-row>
-                <el-button slot="reference" icon="el-icon-plus" size="mini" style="margin-left: 40px;" type="info">添加分类
-                </el-button>
-            </el-popover>
-
+            <el-col align="center">
+                <el-radio-group v-model="classify" size="small">
+                    <template v-for="item in options">
+                        <el-radio :label="item"></el-radio>
+                    </template>
+                </el-radio-group>
+                <el-popover placement="right-end" width="250" v-model="visible">
+                    <el-row :gutter="10">
+                        <el-col :span="17">
+                            <el-input v-model="addClassify" placeholder="请输入分类" size="mini"></el-input>
+                        </el-col>
+                        <el-col :span="3">
+                            <el-button @click="createClassify" type="primary" size="mini">确认</el-button>
+                        </el-col>
+                    </el-row>
+                    <el-button slot="reference" icon="el-icon-plus" size="mini" style="margin-left: 40px;" type="info">
+                        添加分类
+                    </el-button>
+                </el-popover>
+            </el-col>
         </el-row>
-        <div id="vditor"></div>
+        <markdown ref="MD" @inputValue="setMdText"></markdown>
 
 
         <el-row style="margin-top:20px;">
             <el-col align="center">
-                <el-button @click="createArticle" type="primary">
+                <el-button @click="createArticle" type="primary" size="small">
                     创建
                 </el-button>
             </el-col>
@@ -42,52 +44,26 @@
 
 <script>
     import moment from "moment";
-    import Vditor from 'vditor'
-    import "vditor/src/assets/scss/index.scss"
     export default {
         props: ["articleId"],
         data() {
             return {
                 mdtext: "",
+                visible : false,
                 title: "",
                 classify: "普通",
                 options: [],
-                contentEditor: null,
+                addClassify : "",
             };
         },
         mounted() {
             this.getClassify();
-            var that = this
-            this.contentEditor = new Vditor('vditor', {
-                toolbarConfig: {
-                    pin: true,
-                },
-                cache: {
-                    enable: false,
-                },
-                after: () => {
-                    this.contentEditor.setValue('hello, Vditor + Vue!')
-                },
-                upload: {
-                    fieldName: "file",
-                    url: "http://127.0.0.1:8888/markdown/upload_image",//文件上传路径 
-                    success: function (textarea, msg) {//textarea 
-                        //将返回的信息传为json对象 
-                        console.log(msg, textarea)
-                        msg = JSON.parse(msg)
-                        if (msg.code === 0) {//请求成功 
-                            console.log(that.contentEditor)
-                            that.contentEditor.tip("SUccess", 100)
-                            let content = '![' + msg.file + '](http://127.0.0.1:8888/image/' + msg.file + ')'
-                            //插入上传文件后的markdown代码 
-                            that.contentEditor.insertValue(content, true)
-
-                        } else {//请求失败 
-                            this.$message("上传失败")
-                        }
-                    }
-                },
-            })
+            if(this.$route.query.from_id > 0) {
+                this.cloneArticle(this.$route.query.from_id)
+            }
+            if(this.$route.query.classify != undefined) {
+                this.classify = this.$route.query.classify
+            }
         },
         methods: {
             setClassify(c) {
@@ -97,22 +73,12 @@
                 this.mdtext = t;
                 localStorage.setItem("mdtext", this.mdtext);
             },
-            cloneArticle(id, classify) {
-                if (id > 0) {
-                    this.getArticleDetail(id);
-                } else {
-                    this.classify = classify;
-                    this.title = moment().format("YYYY-MM-DD HH:mm");
-                    if (localStorage.getItem("mdtext") != null) {
-                        this.mdtext = localStorage.getItem("mdtext");
-                    }
-                }
-            },
-            async getArticleDetail(id, single) {
+            async cloneArticle(id) {
                 let res = await this.$api.getMdDetail(id);
                 this.mdtext = res.content;
                 this.title = res.title;
                 this.classify = res.classify;
+                this.$refs.MD.setValue(this.mdtext)
             },
             async createArticle() {
                 if (this.title == "") {
@@ -121,9 +87,8 @@
                 }
                 let res = await this.$api.createMd(
                     this.title,
-                    this.contentEditor.getValue(),
+                    this.mdtext,
                     this.classify,
-
                 );
                 if (res.code == 0) {
                     localStorage.setItem("mdtext", "");
@@ -136,6 +101,12 @@
             async getClassify() {
                 let res = await this.$api.getClassify();
                 this.options = res;
+            },
+            createClassify() {
+                this.options.push(this.addClassify)
+                this.classify = this.addClassify
+                this.addClassify = ""
+                this.visible = false
             }
         }
     };

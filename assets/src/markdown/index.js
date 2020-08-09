@@ -14,7 +14,9 @@ import mavonEditor from 'mavon-editor';
 import 'mavon-editor/dist/css/index.css';
 Vue.use(mavonEditor);
 import MdEditor from "@/components/MarkdownEditor.vue"
+import Markdown from "@/components/Vditor.vue"
 Vue.component("markdown-editor", MdEditor)
+Vue.component("markdown", Markdown)
 
 import VueClipboard from 'vue-clipboard2'
 VueClipboard.config.autoSetContainer = true

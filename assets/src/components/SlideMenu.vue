@@ -1,9 +1,9 @@
 <template>
     <div class="middle">
-        <el-menu :default-active="$route.path" class="el-menu-vertical-demo" :collapse="isCollapse"
-            background-color="#485065" text-color="#fff" active-text-color="#4c9fff" :default-openeds="defaultOpens">
+        <el-menu :default-active="$route.path" class="el-menu-vertical-demo" background-color="#485065"
+            text-color="#fff" active-text-color="#4c9fff">
             <template v-for="(item, i) in list">
-                <el-menu-item :index="i" @click="clickMenu(item)">
+                <el-menu-item :index="i + ''" @click="clickMenu(item)">
                     <i class="el-icon-menu"></i>
                     <span slot="title"> {{item}} </span>
                 </el-menu-item>
@@ -37,47 +37,22 @@
 
     export default {
         name: "slideMenu",
-        props: ["list"],
         data() {
             return {
-                isCollapse: false,
-                meauList: [],
-                value1: "",
+                list: [],
                 defaultOpens: ['0', '1']
             };
         },
-        watch: {
-            currentMenuData: {
-                handler(newVal, old) {
-                    this.meauList = newVal;
-                },
-                deep: true,
-                immediate: true
-            }
-        },
         methods: {
-            expandMenu(flag) {
-                this.isCollapse = !flag;
-                this.$emit("expand", flag);
-            },
-            foldMenu() {
-                if (this.isCollapse) {
-                    this.expandMenu(true);
-                } else {
-                    this.expandMenu(false);
-                }
-            },
-            openSubMenu(i) {
-                this.defaultOpens.push(i + '')
-            },
-            closeSubMenu(i) {
-                this.defaultOpens = this.$lodash.pull(this.defaultOpens, i + '')
+            setMenu(l) {
+                this.$set(this, "list" , l)
+                this.$forceUpdate()
             },
             clickMenu(c) {
                 this.$router.push({
-                    path : '/markdown/list',
-                    query : {
-                        classify : c
+                    path: '/markdown/list',
+                    query: {
+                        classify: c
                     }
                 })
             }
