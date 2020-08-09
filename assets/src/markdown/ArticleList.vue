@@ -1,16 +1,16 @@
 <template>
     <el-row style="margin-top:20px;">
-        <el-col :span="20" :offset="2">
+        <el-col :span="18" :offset="2">
             <strong>{{classify}}</strong>
             <el-divider></el-divider>
             <template v-for="(item, i) in mdList" style="margin-bottom:10px;">
-                <el-card :key="i"  style="margin-bottom:10px;">
+                <el-card :key="i" :body-style="{padding : '5px'}" style="margin-bottom: 5px;">
                     <el-row>
-                        <el-col :span="12" style="padding:10px">
+                        <el-col :span="16" style="padding:10px">
                             <span @click="showSingle(item.id)"
                                 style="cursor:pointer;font-size:16px;font-weight:bold;text-decoration: none;color:#CC9966;line-height:20px">{{item.title || "无"}}</span>
                         </el-col>
-                        <el-col :span="12" align="right">
+                        <el-col :span="7" align="right">
                             <el-button type="text" icon="el-icon-s-unfold" @click="toMoveMd(item.id, item.classify)"
                                 v-if="classify != 'trash'">分类</el-button>
 
