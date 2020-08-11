@@ -103,7 +103,7 @@
             async getClassify() {
                 let res = await this.$api.getClassify();
                 this.options = res;
-                if (this.$route.query.classify != undefined || this.$route.query.from_id != undefined) {
+                if (this.$route.query.classify == undefined || this.$route.query.from_id == undefined) {
                     if(this.classify == "" && this.options.length > 0  ) {
                         this.classify = this.options[0]
                     }
