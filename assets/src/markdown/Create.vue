@@ -51,7 +51,7 @@
                 mdtext: "",
                 visible : false,
                 title: "",
-                classify: "普通",
+                classify: "",
                 options: [],
                 addClassify : "",
             };
@@ -60,6 +60,8 @@
             this.getClassify();
             if(this.$route.query.from_id > 0) {
                 this.cloneArticle(this.$route.query.from_id)
+            } else {
+                this.title = moment().format("YYYY-MM-DD") + "记录"
             }
             if(this.$route.query.classify != undefined) {
                 this.classify = this.$route.query.classify
@@ -101,6 +103,11 @@
             async getClassify() {
                 let res = await this.$api.getClassify();
                 this.options = res;
+                if (this.$route.query.classify != undefined || this.$route.query.from_id != undefined) {
+                    if(this.classify == "" && this.options.length > 0  ) {
+                        this.classify = this.options[0]
+                    }
+                }
             },
             createClassify() {
                 this.options.push(this.addClassify)

@@ -116,12 +116,8 @@
                         position: "bottom-right",
                         showClose: false
                     });
-                    this.$router.push({
-                        path : "/markdown/list", 
-                        query : {
-                            classify : this.classify,
-                        }
-                    })
+
+                    this.$router.push("/markdown/detail/" + this.id);
                 } else {
                     this.$notify({
                         title: res.message,
