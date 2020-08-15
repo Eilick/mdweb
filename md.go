@@ -131,6 +131,7 @@ func main() {
 
 	router.GET("/share/page", ShareMd)
 	router.POST("/gen_token", Login)
+	router.GET("/image/:sign", getPicture)
 
 
 	router.Use(CheckUser())
@@ -146,7 +147,7 @@ func main() {
 	router.GET("/markdown/share", GenShareUrl)
 	//router.GET("/markdown/images", getImageList)
 	router.POST("/markdown/del_image", delUploadImg)
-	router.GET("/image/:sign", getPicture)
+	
 	router.GET("/markdown/downloaddb", downloadDb)
 	
 

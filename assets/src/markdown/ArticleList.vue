@@ -16,7 +16,7 @@
 
                             <el-button type="text" icon="el-icon-copy-document" @click="cloneArticle(item.id)">复制
                             </el-button>
-                            <el-button type="text" icon="el-icon-copy-document" @click="share(item.id)">分享
+                            <el-button type="text" icon="el-icon-s-promotion" @click="share(item.id)">分享
                             </el-button>
                         </el-col>
                     </el-row>
