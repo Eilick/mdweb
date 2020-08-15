@@ -22,7 +22,7 @@
                             <el-button @click="createClassify" type="primary" size="mini">确认</el-button>
                         </el-col>
                     </el-row>
-                    <el-button slot="reference" icon="el-icon-plus" size="mini" style="margin-left: 40px;" type="info">
+                    <el-button slot="reference" size="small" style="margin-left: 40px;" type="text">
                         添加分类
                     </el-button>
                 </el-popover>

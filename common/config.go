@@ -12,11 +12,13 @@ var (
 var DbFile *string
 var Port *string
 var ImageDir *string
+var User *string
 
 func GetConfigInstance() {
 	cfgOnce.Do(func() {
 		DbFile = flag.String("db", "./data.db", "database file")
 		ImageDir = flag.String("imagedir", "./image", "image dir")
+		User = flag.String("user", "hellokitty", "user name")
 		Port = flag.String("port", "8888", "port")
 		flag.Parse()
 

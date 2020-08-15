@@ -1,6 +1,6 @@
 <template>
     <div class="middle">
-        <el-menu :default-active="$route.path" class="el-menu-vertical-demo" background-color="#485065"
+        <el-menu :default-active="$route.path" class="el-menu-vertical-demo" background-color="#333333"
             text-color="#fff" active-text-color="#4c9fff">
             <template v-for="(item, i) in list">
                 <el-menu-item :index="i + ''" @click="clickMenu(item)">

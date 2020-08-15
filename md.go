@@ -31,6 +31,29 @@ func Cors() gin.HandlerFunc {
 	}
 }
 
+func CheckUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token := c.GetHeader("token")
+		payload, err := common.ParseJwt(token)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
+				"code" : -100,
+			})
+			return
+		}
+
+		if u, ok := payload["user"]; ok {
+			if u.(string) == *common.User {
+				c.Next()
+				return
+			}
+		}
+		c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
+			"code" : -100,
+		})
+	}
+}
+
 func main() {
 
 	common.GetConfigInstance()
@@ -53,6 +76,21 @@ func main() {
 			ctx.Data(http.StatusOK, "text/html", md)
 		})
 	}
+
+	if login, err := box.Find("login.html"); err == nil {
+		router.GET("/login", func(ctx *gin.Context) {
+			ctx.Header("Cache-Control", "private, max-age=86400")
+			ctx.Data(http.StatusOK, "text/html", login)
+		})
+	}
+
+	if share, err := box.Find("share.html"); err == nil {
+		router.GET("/share", func(ctx *gin.Context) {
+			ctx.Header("Cache-Control", "private, max-age=86400")
+			ctx.Data(http.StatusOK, "text/html", share)
+		})
+	}
+
 	router.GET("/css/:name", func(ctx *gin.Context) {
 		name := ctx.Param("name")
 		ctx.Header("Cache-Control", "private, max-age=86400")
@@ -91,7 +129,11 @@ func main() {
 		}
 	})
 
-	//router.StaticFS("/image", http.Dir(*common.ImageDir))
+	router.GET("/share/page", ShareMd)
+	router.POST("/gen_token", Login)
+
+
+	router.Use(CheckUser())
 	router.POST("/markdown/upload_image", uploadImage2Db)
 	router.POST("/markdown/create", CreateMd)
 	router.POST("/markdown/update", UpdateMd)
@@ -101,10 +143,12 @@ func main() {
 	router.GET("/markdown/list", MdList)
 	router.GET("/markdown/classify", MdClassify)
 	router.GET("/markdown/detail", SingleMd)
+	router.GET("/markdown/share", GenShareUrl)
 	//router.GET("/markdown/images", getImageList)
 	router.POST("/markdown/del_image", delUploadImg)
 	router.GET("/image/:sign", getPicture)
 	router.GET("/markdown/downloaddb", downloadDb)
+	
 
 	router.Run(":" + *common.Port)
 
@@ -141,7 +185,36 @@ func CreateMd(ctx *gin.Context) {
 		"code": 0,
 		"id":   id,
 	})
+}
 
+type Access struct {
+	User string `json:"user"`
+}
+
+func Login(ctx *gin.Context) {
+	var ac Access
+	if err := ctx.BindJSON(&ac); err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -1,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	if ac.User != *common.User {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    -2,
+			"message": "口令不对哦！！！",
+		})
+		return
+	}
+
+	token, _ := common.GenJwt(ac.User)
+
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"code":    0,
+		"token": token,
+	})
 }
 
 func UpdateMd(ctx *gin.Context) {
@@ -289,6 +362,43 @@ func SingleMd(ctx *gin.Context) {
 
 }
 
+func GenShareUrl(ctx *gin.Context)  {
+
+	id := ctx.DefaultQuery("id", "0")
+
+	if id == "0" {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code" : -1,
+			"message" : "参数有误",
+		})
+		return
+	}
+
+	token , _ := common.GenMDJwt(id)
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"code" : 0,
+		"token" : token,
+	})
+}
+
+func ShareMd(ctx *gin.Context)  {
+
+	token := ctx.DefaultQuery("code", "")
+
+	payload, err := common.ParseJwt(token)
+
+	if err != nil {
+		ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code" : -1,
+			"message" : "参数有误",
+		})
+		return
+	}
+	d := database.SingleArticle(payload["id"].(string))
+
+	ctx.JSON(http.StatusOK, d)
+}
+
 func uploadImage(ctx *gin.Context) {
 	header, err := ctx.FormFile("file")
 	if err != nil {
@@ -327,7 +437,6 @@ func uploadImage2Db(ctx *gin.Context) {
 		})
 		return
 	}
-	fmt.Println(header)
 
 	dst := header.Filename
 

@@ -1,33 +1,49 @@
 <template>
     <el-row id="app">
-        <el-backtop :right="20"></el-backtop>
-        <el-main style="margin-bottom: 200px;">
-            <router-view />
-        </el-main>
+        <el-container>
+            <el-header :height="headerHeight">
+                <myheader></myheader>
+            </el-header>
+            <el-container>
+                <el-aside width="200px">
+                    <slidemenu  ref="SlideMenu"></slidemenu>
+                </el-aside>
+                <el-main style="margin-bottom: 200px;">
+                    <keep-alive>
+                        <router-view v-if="$route.meta.keepAlive" @updateSlieMenu="getClassify"/>
+                    </keep-alive>
+                    <router-view v-if="!$route.meta.keepAlive"  @updateSlieMenu="getClassify" />
+                </el-main>
+            </el-container>
+        </el-container>
     </el-row>
 </template>
 <script>
-import moment from "moment";
+    //components
+    import myheader from "@/components/EleHeader";
+    import slideMenu from "@/components/SlideMenu";
 
-export default {
-    name: "Md",
-    data() {
-        return {
-            print: false
-        };
-    },
-    mounted() {
-        if (this.$route.query.print == 1) {
-            this.print = true;
-            window.print();
+    import "@/assets/css/index.css";
+    export default {
+        name: "index",
+        data() {
+            return {
+                headerHeight: "60px",
+            };
+        },
+        components: {
+            myheader: myheader,
+            slidemenu: slideMenu
+        },
+        methods: {
+            async getClassify() {
+                let res = await this.$api.getClassify();
+                this.$refs.SlideMenu.setMenu(res)
+            },
+        },
+
+        mounted() {
+           this.getClassify()
         }
-    }
-};
+    };
 </script>
-<style media="print">
-@page {
-    size: auto; /* auto is the initial value */
-    margin: 0mm; /* this affects the margin in the printer settings */
-}
-</style>
-

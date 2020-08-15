@@ -8,7 +8,7 @@
                     <el-row>
                         <el-col :span="16" style="padding:10px">
                             <span @click="showSingle(item.id)"
-                                style="cursor:pointer;font-size:16px;font-weight:bold;text-decoration: none;color:#CC9966;line-height:20px">{{item.title || "无"}}</span>
+                                style="cursor:pointer;font-size:16px;font-weight:bold;text-decoration: none;color:#666666;line-height:20px">{{item.title || "无"}}</span>
                         </el-col>
                         <el-col :span="7" align="right">
                             <el-button type="text" icon="el-icon-s-unfold" @click="toMoveMd(item.id, item.classify)"
@@ -16,7 +16,7 @@
 
                             <el-button type="text" icon="el-icon-copy-document" @click="cloneArticle(item.id)">复制
                             </el-button>
-                            <el-button type="text" icon="el-icon-s-promotion" @click="savePdf(item.id)">pdf
+                            <el-button type="text" icon="el-icon-copy-document" @click="share(item.id)">分享
                             </el-button>
                         </el-col>
                     </el-row>
@@ -90,6 +90,12 @@
 
             showSingle(id) {
                 this.$router.push("/markdown/detail/" + id);
+            },
+            async share(id) {
+                let res = await this.$api.getShareUrl(id)
+                if(res.code == 0) {
+                    window.open("/share?code=" + res.token)
+                }
             },
             cloneArticle(id) {
                 this.$router.push({

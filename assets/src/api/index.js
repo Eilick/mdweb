@@ -53,4 +53,19 @@ export default {
             name
         })
     },
+    genToken : (name) => {
+        return request('post', '/gen_token', {
+            user : name
+        })
+    },
+    getShareUrl : (id) => {
+        return request('get', '/markdown/share', {
+            id
+        })
+    },
+    getShareMd : (code) => {
+        return request('get', '/share/page', {
+            code
+        })
+    },
 }
