@@ -95,7 +95,7 @@
 
             showSingle(item) {
                 if(item.content_type == "md") {
-                    this.$router.push("/markdown/detail/" + id);
+                    this.$router.push("/markdown/detail/" + item.id);
                 } else {
                     this.jumpUrl(item.id)
                 }
