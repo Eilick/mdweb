@@ -1,35 +1,21 @@
 <template>
     <el-row>
         <el-row style="margin-bottom: 20px;">
-            <el-col align="center">
-                <el-radio-group v-model="classify" size="small">
-                    <template v-for="item in options">
-                        <el-radio :label="item"></el-radio>
-                    </template>
-                </el-radio-group>
-                <el-popover placement="right-end" width="250" v-model="visible">
-                    <el-row :gutter="10">
-                        <el-col :span="17">
-                            <el-input v-model="addClassify" placeholder="请输入分类" size="mini"></el-input>
-                        </el-col>
-                        <el-col :span="3">
-                            <el-button @click="createClassify" type="primary" size="mini">确认</el-button>
-                        </el-col>
-                    </el-row>
-                    <el-button slot="reference" size="small" style="margin-left: 40px;" type="text">
-                        添加分类
-                    </el-button>
-                </el-popover>
+            <el-col :span="18" :offset="3">
+                <el-select v-model="classify" filterable allow-create default-first-option placeholder="请选择分类"
+                    size="small" style="width: 100%;">
+                    <el-option v-for="item in options" :key="item" :label="item" :value="item"></el-option>
+                </el-select>
             </el-col>
         </el-row>
         <el-row style="margin-bottom: 20px;">
-            <el-col :span="16" :offset="4">
+            <el-col :span="18" :offset="3">
                 <el-input v-model="title" placeholder="请输入标题"></el-input>
             </el-col>
         </el-row>
 
         <el-row style="margin-bottom: 20px;">
-            <el-col :span="16" :offset="4">
+            <el-col :span="18" :offset="3">
                 <el-input v-model="mdtext" placeholder="请输入URL" type="textarea" rows="6"></el-input>
             </el-col>
         </el-row>
@@ -53,19 +39,19 @@
         data() {
             return {
                 mdtext: "",
-                visible : false,
+                visible: false,
                 title: "",
                 classify: "",
                 options: [],
-                addClassify : "",
+                addClassify: "",
             };
         },
         mounted() {
-           // this.getClassify();
+            // this.getClassify();
         },
         methods: {
             setClassify(c) {
-                if(c != undefined) {
+                if (c != undefined) {
                     this.classify = c
                 }
                 this.mdtext = ""
@@ -94,7 +80,7 @@
                 let res = await this.$api.getClassify();
                 this.options = res;
                 if (this.$route.query.classify == undefined || this.$route.query.from_id == undefined) {
-                    if(this.classify == "" && this.options.length > 0  ) {
+                    if (this.classify == "" && this.options.length > 0) {
                         this.classify = this.options[0]
                     }
                 }

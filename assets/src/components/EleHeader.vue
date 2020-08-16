@@ -2,7 +2,7 @@
     <el-row>
         <el-menu mode="horizontal" background-color="#333333" text-color="#fff" active-text-color="#4c9fff"
             class="fix-menu">
-            <el-menu-item @click="showBookmark()" >书签</el-menu-item>
+            <el-menu-item @click="showBookmark()">书签</el-menu-item>
             <el-menu-item @click="jump('create')" style="margin-left: 50%;"><i class="el-icon-edit"></i>新建markdown</el-menu-item>
             <el-menu-item @click="showCreateDialog()">新增书签</el-menu-item>
         </el-menu>
@@ -10,7 +10,7 @@
         <el-dialog title="新增书签" :visible.sync="dialogVisible" width="60%">
             <CreateUrl ref="CreateUrl" @update="hideCreateDialog" />
         </el-dialog>
-        <el-dialog title="书签" :visible.sync="showLink" width="60%">
+        <el-dialog title="书签" :visible.sync="showLink" width="65%" id="bookmark">
             <UrlList ref="UrlList" />
         </el-dialog>
     </el-row>

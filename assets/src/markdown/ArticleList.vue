@@ -21,7 +21,7 @@
                         </svg>
                     </template>
                 </el-table-column>
-                <el-table-column prop="title" width="180">
+                <el-table-column prop="title" width="500">
                     <template slot-scope="scope">
                         <span @click="showSingle(scope.row)" class="title"
                             :class="'title-' + scope.row.content_type">{{scope.row.title || "无"}}</span>
