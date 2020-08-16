@@ -109,7 +109,7 @@
             },
 
             showSingle(item) {
-                if (item.content_type == "md") {
+                if(item.content_type == "md") {
                     this.$router.push("/markdown/detail/" + item.id);
                 } else {
                     this.jumpUrl(item.id)
@@ -156,6 +156,7 @@
         }
     };
 </script>
+<<<<<<< HEAD
 <style scoped>
     .title {
         cursor: pointer;
@@ -176,3 +177,5 @@
         color: #718af5;
     }
 </style>
+=======
+>>>>>>> 5d918bf3267071111ad7c567326bc7a8b5cc9bd1
