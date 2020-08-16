@@ -32,6 +32,11 @@ export default {
             classify : classify,
         })
     },
+    getUrlList: (listType) => {
+        return request('get', '/markdown/urllist', {
+            list_type : listType,
+        })
+    },
     getClassify: () => {
         return request('get', '/markdown/classify')
     },

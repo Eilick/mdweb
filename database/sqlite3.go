@@ -188,13 +188,59 @@ func ArticleList(listStatus string, classify string) []map[string]interface{} {
 		createAt := ""
 		updateAt := ""
 		clas := ""
-		cntentType := ""
-		if err := rows.Scan(&id, &title, &clas, &cntentType, &createAt, &updateAt); err == nil {
+		contentType := ""
+		if err := rows.Scan(&id, &title, &clas, &contentType, &createAt, &updateAt); err == nil {
 			list = append(list, map[string]interface{}{
 				"id":           id,
 				"title":        title,
 				"classify":     clas,
-				"content_type": cntentType,
+				"content_type": contentType,
+				"create_at":    createAt,
+				"update_at":    updateAt,
+			})
+		}
+	}
+	rows.Close()
+	tmpDb.Close()
+
+	return list
+}
+
+func UrlList(listStatus string) []map[string]interface{} {
+	tmpDb, err := sql.Open("sqlite3", GetDb())
+
+	if err != nil {
+		panic(err)
+	}
+
+	var showStatus int = 0
+	if listStatus == "trash" {
+		showStatus = -1
+	}
+
+	sqlStr := fmt.Sprintf("SELECT id, title,classify,content_type,content,create_at,update_at FROM markdown where show_status=%d and content_type='%s' order by update_at desc", showStatus, "url")
+	rows, err := tmpDb.Query(sqlStr)
+
+	if err != nil {
+		return []map[string]interface{}{}
+	}
+
+	list := []map[string]interface{}{}
+	for rows.Next() {
+		title := ""
+		id := ""
+		createAt := ""
+		updateAt := ""
+		clas := ""
+		contentType := ""
+		content := ""
+		if err := rows.Scan(&id, &title, &clas, &contentType, &content, &createAt, &updateAt); err == nil {
+			list = append(list, map[string]interface{}{
+				"id":           id,
+				"title":        title,
+				"classify":     clas,
+				"content_type": contentType,
+				"content":      content,
 				"create_at":    createAt,
 				"update_at":    updateAt,
 			})

@@ -65,7 +65,11 @@
         },
         methods: {
             setClassify(c) {
-                //this.classify = c
+                if(c != undefined) {
+                    this.classify = c
+                }
+                this.mdtext = ""
+                this.title = ""
                 this.getClassify()
             },
             async createUrl() {

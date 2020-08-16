@@ -1,34 +1,34 @@
 <template>
     <el-row>
         <el-menu mode="horizontal" background-color="#333333" text-color="#fff" active-text-color="#4c9fff"
-            style="position:fixed;width:100%;left:0;z-index:10;text-align:right;float:right;border-bottom:0px;padding-left: 15%;padding-right: 15%;"
-            ref="menubar">
-
-            <!--<el-menu-item>
-            <img src="../assets/image/logo.jpg" style="width:40px;padding-top:10px"/>
-        </el-menu-item> -->
-            <el-menu-item @click="jump('create')"><i class="el-icon-edit"></i>新建MD</el-menu-item>
-            <el-menu-item @click="showCreateDialog()">新建URL</el-menu-item>
-
-
+            class="fix-menu">
+            <el-menu-item @click="showBookmark()" >书签</el-menu-item>
+            <el-menu-item @click="jump('create')" style="margin-left: 50%;"><i class="el-icon-edit"></i>新建markdown</el-menu-item>
+            <el-menu-item @click="showCreateDialog()">新增书签</el-menu-item>
         </el-menu>
-        <el-dialog title="创建链接" :visible.sync="dialogVisible" width="60%" :before-close="handleClose">
+
+        <el-dialog title="新增书签" :visible.sync="dialogVisible" width="60%">
             <CreateUrl ref="CreateUrl" @update="hideCreateDialog" />
+        </el-dialog>
+        <el-dialog title="书签" :visible.sync="showLink" width="60%">
+            <UrlList ref="UrlList" />
         </el-dialog>
     </el-row>
 </template>
 
 <script>
     import CreateUrl from "../markdown/CreateUrl"
+    import UrlList from "../markdown/UrlList"
     export default {
         name: "myheader",
         data() {
             return {
-                dialogVisible : false
+                dialogVisible: false,
+                showLink: false,
             }
         },
-        components : {
-            CreateUrl,
+        components: {
+            CreateUrl, UrlList
         },
         methods: {
             jump(type) {
@@ -38,15 +38,33 @@
             },
             showCreateDialog() {
                 this.dialogVisible = true
-                if(this.dialogVisible ) {
-                    setTimeout(() => {
-                        this.$refs.CreateUrl.getClassify()
-                    })
-                }
+                setTimeout(() => {
+                    this.$refs.CreateUrl.setClassify(this.$route.query.classify)
+                })
             },
             hideCreateDialog() {
                 this.dialogVisible = false
+                this.$emit("updateSlieMenu")
             },
+            showBookmark() {
+                this.showLink = true
+                setTimeout(() => {
+                    this.$refs.UrlList.getUrlList()
+                })
+            }
         }
     };
 </script>
+<style scoped>
+    .fix-menu {
+        position:fixed;
+        width:100%;
+        left:0;
+        z-index:10;
+        text-align:right;
+        float:right;
+        border-bottom:0px;
+        padding-left: 15%;
+        padding-right: 15%;
+    }
+</style>

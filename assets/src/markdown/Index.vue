@@ -2,7 +2,7 @@
     <el-row id="app">
         <el-container>
             <el-header :height="headerHeight">
-                <myheader></myheader>
+                <myheader  @updateSlieMenu="getClassify"></myheader>
             </el-header>
             <el-container>
                 <el-aside width="200px">

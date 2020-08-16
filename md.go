@@ -141,6 +141,7 @@ func main() {
 	router.POST("/markdown/delete", DeleteMd)
 	router.POST("/markdown/recover", RecoverMd)
 	router.GET("/markdown/list", MdList)
+	router.GET("/markdown/urllist", UrlList)
 	router.GET("/markdown/classify", MdClassify)
 	router.GET("/markdown/detail", SingleMd)
 	router.GET("/markdown/share", GenShareUrl)
@@ -241,7 +242,6 @@ func UpdateMd(ctx *gin.Context) {
 		"code": 0,
 		"id":   id,
 	})
-
 }
 
 func MoveMd(ctx *gin.Context) {
@@ -340,6 +340,15 @@ func MdList(ctx *gin.Context) {
 	s := ctx.DefaultQuery("list_type", "ok")
 	c := ctx.DefaultQuery("classify", "全部")
 	list := database.ArticleList(s, c)
+
+	ctx.JSON(http.StatusOK, list)
+
+}
+
+func UrlList(ctx *gin.Context) {
+
+	s := ctx.DefaultQuery("list_type", "ok")
+	list := database.UrlList(s)
 
 	ctx.JSON(http.StatusOK, list)
 
