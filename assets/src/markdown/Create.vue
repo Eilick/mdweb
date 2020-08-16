@@ -91,6 +91,7 @@
                     this.title,
                     this.mdtext,
                     this.classify,
+                    "md"
                 );
                 if (res.code == 0) {
                     localStorage.setItem("mdtext", "");

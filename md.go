@@ -37,7 +37,7 @@ func CheckUser() gin.HandlerFunc {
 		payload, err := common.ParseJwt(token)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
-				"code" : -100,
+				"code": -100,
 			})
 			return
 		}
@@ -49,7 +49,7 @@ func CheckUser() gin.HandlerFunc {
 			}
 		}
 		c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
-			"code" : -100,
+			"code": -100,
 		})
 	}
 }
@@ -133,7 +133,6 @@ func main() {
 	router.POST("/gen_token", Login)
 	router.GET("/image/:sign", getPicture)
 
-
 	router.Use(CheckUser())
 	router.POST("/markdown/upload_image", uploadImage2Db)
 	router.POST("/markdown/create", CreateMd)
@@ -147,19 +146,19 @@ func main() {
 	router.GET("/markdown/share", GenShareUrl)
 	//router.GET("/markdown/images", getImageList)
 	router.POST("/markdown/del_image", delUploadImg)
-	
+
 	router.GET("/markdown/downloaddb", downloadDb)
-	
 
 	router.Run(":" + *common.Port)
 
 }
 
 type Markdown struct {
-	Id       string `json:"id"`
-	Title    string `json:"title"`
-	Content  string `json:"content"`
-	Classify string `json:"classify"`
+	Id          string `json:"id"`
+	Title       string `json:"title"`
+	Content     string `json:"content"`
+	Classify    string `json:"classify"`
+	ContentType string `json:"content_type"`
 }
 
 func CreateMd(ctx *gin.Context) {
@@ -172,7 +171,7 @@ func CreateMd(ctx *gin.Context) {
 		return
 	}
 
-	id, err := database.AddArticle(md.Title, md.Content, md.Classify)
+	id, err := database.AddArticle(md.Title, md.Content, md.Classify, md.ContentType)
 
 	if err != nil {
 		ctx.JSON(http.StatusOK, map[string]interface{}{
@@ -213,7 +212,7 @@ func Login(ctx *gin.Context) {
 	token, _ := common.GenJwt(ac.User)
 
 	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"code":    0,
+		"code":  0,
 		"token": token,
 	})
 }
@@ -363,26 +362,35 @@ func SingleMd(ctx *gin.Context) {
 
 }
 
-func GenShareUrl(ctx *gin.Context)  {
+func JumpUrl(ctx *gin.Context) {
+
+	id := ctx.DefaultQuery("id", "0")
+	d := database.SingleArticle(id)
+
+	ctx.Redirect(http.StatusMovedPermanently, d["content"].(string))
+
+}
+
+func GenShareUrl(ctx *gin.Context) {
 
 	id := ctx.DefaultQuery("id", "0")
 
 	if id == "0" {
 		ctx.JSON(http.StatusOK, map[string]interface{}{
-			"code" : -1,
-			"message" : "参数有误",
+			"code":    -1,
+			"message": "参数有误",
 		})
 		return
 	}
 
-	token , _ := common.GenMDJwt(id)
+	token, _ := common.GenMDJwt(id)
 	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"code" : 0,
-		"token" : token,
+		"code":  0,
+		"token": token,
 	})
 }
 
-func ShareMd(ctx *gin.Context)  {
+func ShareMd(ctx *gin.Context) {
 
 	token := ctx.DefaultQuery("code", "")
 
@@ -390,8 +398,8 @@ func ShareMd(ctx *gin.Context)  {
 
 	if err != nil {
 		ctx.JSON(http.StatusOK, map[string]interface{}{
-			"code" : -1,
-			"message" : "参数有误",
+			"code":    -1,
+			"message": "参数有误",
 		})
 		return
 	}

@@ -37,13 +37,13 @@
         },
         methods: {
             async getClassify() {
-                let res = await this.$api.getClassify();
+                let res = await this.$api.getClassify("md");
                 this.$refs.SlideMenu.setMenu(res)
             },
         },
 
         mounted() {
-           this.getClassify()
+            this.getClassify()
         }
     };
 </script>

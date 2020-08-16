@@ -13,7 +13,7 @@ func GetDb() string {
 	return *common.DbFile
 }
 
-func AddArticle(title, content, classify string) (int64, error) {
+func AddArticle(title, content, classify, contentType string) (int64, error) {
 
 	tmpDb, err := sql.Open("sqlite3", GetDb())
 
@@ -21,14 +21,14 @@ func AddArticle(title, content, classify string) (int64, error) {
 		panic(err)
 	}
 
-	stmt, err := tmpDb.Prepare("INSERT INTO markdown(title, content, classify,show_status, create_at, update_at) values(?, ?, ?, ?, ?, ?)")
+	stmt, err := tmpDb.Prepare("INSERT INTO markdown(title, content, classify, content_type, show_status, create_at, update_at) values(?, ?, ?, ?, ?, ?, ?)")
 
 	if err != nil {
 		return 0, err
 	}
 
 	nowTime := common.GetNowDateTimeString()
-	res, err := stmt.Exec(title, content, classify, 0, nowTime, nowTime)
+	res, err := stmt.Exec(title, content, classify, contentType, 0, nowTime, nowTime)
 	stmt.Close()
 	tmpDb.Close()
 	if err != nil {
@@ -170,9 +170,9 @@ func ArticleList(listStatus string, classify string) []map[string]interface{} {
 		showStatus = -1
 	}
 
-	sqlStr := fmt.Sprintf("SELECT id, title,classify, create_at,update_at FROM markdown where show_status=%d order by update_at desc", showStatus)
+	sqlStr := fmt.Sprintf("SELECT id, title,classify,content_type, create_at,update_at FROM markdown where show_status=%d order by update_at desc", showStatus)
 	if classify != "全部" {
-		sqlStr = fmt.Sprintf("SELECT id, title, classify, create_at,update_at FROM markdown where show_status=%d and classify='%s' order by update_at desc", showStatus, classify)
+		sqlStr = fmt.Sprintf("SELECT id, title, classify,content_type, create_at,update_at FROM markdown where show_status=%d and classify='%s' order by update_at desc", showStatus, classify)
 	}
 
 	rows, err := tmpDb.Query(sqlStr)
@@ -188,13 +188,15 @@ func ArticleList(listStatus string, classify string) []map[string]interface{} {
 		createAt := ""
 		updateAt := ""
 		clas := ""
-		if err := rows.Scan(&id, &title, &clas, &createAt, &updateAt); err == nil {
+		cntentType := ""
+		if err := rows.Scan(&id, &title, &clas, &cntentType, &createAt, &updateAt); err == nil {
 			list = append(list, map[string]interface{}{
-				"id":        id,
-				"title":     title,
-				"classify":  clas,
-				"create_at": createAt,
-				"update_at": updateAt,
+				"id":           id,
+				"title":        title,
+				"classify":     clas,
+				"content_type": cntentType,
+				"create_at":    createAt,
+				"update_at":    updateAt,
 			})
 		}
 	}

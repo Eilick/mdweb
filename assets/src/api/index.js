@@ -1,9 +1,9 @@
 import request from './request-base' //引入axios的封装方法
 
 export default {
-    createMd: (title, content, classify) => {
+    createMd: (title, content, classify, content_type) => {
         return request('post', '/markdown/create', {
-            title, content, classify
+            title, content, classify, content_type
         })
     },
     updateMd: (id, title, content) => {

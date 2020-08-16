@@ -1,19 +1,24 @@
 <template>
     <el-row style="margin-top:20px;">
-        <el-col :span="18" :offset="2">
+        <el-col :span="20" :offset="2">
             <strong>{{classify}}</strong>
             <el-divider></el-divider>
             <template v-for="(item, i) in mdList" style="margin-bottom:10px;">
                 <el-card :key="i" :body-style="{padding : '5px'}" style="margin-bottom: 5px;">
-                    <el-row>
-                        <el-col :span="16" style="padding:10px">
-                            <span @click="showSingle(item.id)"
-                                style="cursor:pointer;font-size:16px;font-weight:bold;text-decoration: none;color:#666666;line-height:20px">{{item.title || "无"}}</span>
+                    <el-row :gutter="20">
+                        <el-col :span="2" style="padding:10px" align="center">
+                            <el-avatar shape="square" :size="40" :fit="'fill'" :icon="item.content_type == 'md' ? 'el-icon-document' : 'el-icon-link'"></el-avatar>
                         </el-col>
-                        <el-col :span="7" align="right">
+                        
+                        <el-col :span="15" style="padding:20px">
+                            <span @click="showSingle(item)" v-if="item.content_type == 'md'"
+                                style="cursor:pointer;font-size:16px;font-weight:bold;text-decoration: none;color:#666666;line-height:20px">{{item.title || "无"}}</span>
+                            <span @click="showSingle(item)" v-if="item.content_type == 'url'"
+                                style="cursor:pointer;font-size:16px;font-weight:bold;text-decoration: none;color:#718af5;;line-height:20px">{{item.title || "无"}}</span>
+                        </el-col>
+                        <el-col :span="6" align="right"style="padding:10px">
                             <el-button type="text" icon="el-icon-s-unfold" @click="toMoveMd(item.id, item.classify)"
                                 v-if="classify != 'trash'">分类</el-button>
-
                             <el-button type="text" icon="el-icon-copy-document" @click="cloneArticle(item.id)">复制
                             </el-button>
                             <el-button type="text" icon="el-icon-s-promotion" @click="share(item.id)">分享
@@ -88,8 +93,16 @@
                 }
             },
 
-            showSingle(id) {
-                this.$router.push("/markdown/detail/" + id);
+            showSingle(item) {
+                if(item.content_type == "md") {
+                    this.$router.push("/markdown/detail/" + id);
+                } else {
+                    this.jumpUrl(item.id)
+                }
+            },
+            async jumpUrl(id) {
+                let res = await this.$api.getMdDetail(id);
+                window.open(res.content)
             },
             async share(id) {
                 let res = await this.$api.getShareUrl(id)
