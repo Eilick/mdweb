@@ -27,6 +27,9 @@
                 upload: {
                     fieldName: "file",
                     url: "/markdown/upload_image",//文件上传路径 
+                    headers : {
+                        token : localStorage.getItem("token"),
+                    },
                     success: function (textarea, msg) {//textarea 
                         msg = JSON.parse(msg)
                         if (msg.code === 0) {//请求成功 
