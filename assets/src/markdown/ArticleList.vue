@@ -2,7 +2,7 @@
     <el-row style="margin-top:20px;">
         <el-col :span="20" :offset="2">
             <el-row><strong>{{classify}}</strong></el-row>
-            <el-table :data="mdList" stripe size="medium" style="width:100%;">
+            <el-table :data="mdList" stripe size="small" style="width:100%;">
                 <el-table-column width="80">
                     <template slot-scope="scope">
                         <svg t="1597557946874" class="icon" viewBox="0 0 1024 1024" version="1.1"
@@ -156,7 +156,6 @@
         }
     };
 </script>
-<<<<<<< HEAD
 <style scoped>
     .title {
         cursor: pointer;
@@ -177,5 +176,3 @@
         color: #718af5;
     }
 </style>
-=======
->>>>>>> 5d918bf3267071111ad7c567326bc7a8b5cc9bd1

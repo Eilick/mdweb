@@ -32,6 +32,11 @@ export default {
             classify : classify,
         })
     },
+    searchMdList: (keyword) => {
+        return request('get', '/markdown/search', {
+            keyword
+        })
+    },
     getUrlList: (listType) => {
         return request('get', '/markdown/urllist', {
             list_type : listType,

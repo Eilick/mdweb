@@ -7,7 +7,7 @@ import UpdateMd from '@/markdown/Edit'
 
 import MdDetail from '@/markdown/Detail'
 import MdList from '@/markdown/ArticleList'
-
+import Search from '@/markdown/Search'
 Vue.use(Router)
 
 const router = new Router({
@@ -38,7 +38,15 @@ const router = new Router({
             name: 'MdList',
             component: MdList,
             meta : {
-                keepAlive : false,
+                keepAlive : true,
+            }
+        },
+         {
+            path: '/markdown/search',
+            name: 'Search',
+            component: Search,
+            meta : {
+                keepAlive : true,
             }
         },
         {

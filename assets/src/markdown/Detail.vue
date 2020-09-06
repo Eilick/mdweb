@@ -1,11 +1,11 @@
 <template>
     <el-row>
-        <el-row style="margin-top:10px;margin-bottom:5px;">
-            <el-col align="center">
-                <strong style="font-size: 20px;">{{title}}</strong>
-            </el-col>
-        </el-row>
-        <el-row style="margin-top: 20px;">
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+          <el-breadcrumb-item :to="{ path: '/markdown/list', query :{classify : classify} }">{{classify}}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{title}}</el-breadcrumb-item>
+        </el-breadcrumb>
+       
+        <el-row style="margin-top: 40px;">
             <el-col :span="22" :offset="1">
                 <div id="detail"></div>
             </el-col>

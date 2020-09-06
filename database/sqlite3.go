@@ -172,8 +172,50 @@ func ArticleList(listStatus string, classify string) []map[string]interface{} {
 
 	sqlStr := fmt.Sprintf("SELECT id, title,classify,content_type, create_at,update_at FROM markdown where show_status=%d order by update_at desc", showStatus)
 	if classify != "全部" {
-		sqlStr = fmt.Sprintf("SELECT id, title, classify,content_type, create_at,update_at FROM markdown where show_status=%d and classify='%s' order by update_at desc", showStatus, classify)
+		sqlStr = fmt.Sprintf("SELECT id, title, classify,content_type, create_at,update_at FROM markdown where show_status=%d and classify='%s' and content_type='%s' order by update_at desc", showStatus, classify, "md")
 	}
+
+	rows, err := tmpDb.Query(sqlStr)
+
+	if err != nil {
+		return []map[string]interface{}{}
+	}
+
+	list := []map[string]interface{}{}
+	for rows.Next() {
+		title := ""
+		id := ""
+		createAt := ""
+		updateAt := ""
+		clas := ""
+		contentType := ""
+		if err := rows.Scan(&id, &title, &clas, &contentType, &createAt, &updateAt); err == nil {
+			list = append(list, map[string]interface{}{
+				"id":           id,
+				"title":        title,
+				"classify":     clas,
+				"content_type": contentType,
+				"create_at":    createAt,
+				"update_at":    updateAt,
+			})
+		}
+	}
+	rows.Close()
+	tmpDb.Close()
+
+	return list
+}
+
+func SearchList(keyword string) []map[string]interface{} {
+	tmpDb, err := sql.Open("sqlite3", GetDb())
+
+	if err != nil {
+		panic(err)
+	}
+
+	var showStatus int = 0
+
+	sqlStr := fmt.Sprintf("SELECT id, title, classify,content_type, create_at,update_at FROM markdown where show_status=%d and (title like '%%%s%%' or content=title like '%%%s%%') order by update_at desc", showStatus, keyword, keyword)
 
 	rows, err := tmpDb.Query(sqlStr)
 

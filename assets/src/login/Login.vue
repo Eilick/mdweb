@@ -3,7 +3,7 @@
         <el-row style="margin-top:30vh;">
             <el-col :span="14" :offset="5">
                 <p style="margin-bottom: 20px;"><strong slot="label" style="font-size: 20px;">输入登录口令:</strong></p>
-                <el-input v-model="user" @keyup.enter.native="goLogin"></el-input>
+                <el-input v-model="user" @keyup.enter.native="goLogin" type="password"></el-input>
             </el-col>
 
         </el-row>

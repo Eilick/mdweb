@@ -3,14 +3,17 @@
         <el-menu mode="horizontal" background-color="#333333" text-color="#fff" active-text-color="#4c9fff"
             class="fix-menu">
             <el-menu-item @click="showBookmark()">书签</el-menu-item>
-            <el-menu-item @click="jump('create')" style="margin-left: 50%;"><i class="el-icon-edit"></i>新建markdown</el-menu-item>
+
+            <el-menu-item @click="jump('search')" style="margin-left: 40%;"><i class="el-icon-search"></i></el-menu-item>
+            <el-menu-item @click="jump('create')">新建markdown</el-menu-item>
             <el-menu-item @click="showCreateDialog()">新增书签</el-menu-item>
+            <el-menu-item @click="exit()">退出</el-menu-item>
         </el-menu>
 
-        <el-dialog title="新增书签" :visible.sync="dialogVisible" width="60%">
+        <el-dialog title="新增书签" :visible.sync="dialogVisible" width="60%" :close-on-click-modal="false">
             <CreateUrl ref="CreateUrl" @update="hideCreateDialog" />
         </el-dialog>
-        <el-dialog title="书签" :visible.sync="showLink" width="65%" id="bookmark">
+        <el-dialog title="书签" :visible.sync="showLink" width="65%" id="bookmark" >
             <UrlList ref="UrlList" />
         </el-dialog>
     </el-row>
@@ -35,6 +38,9 @@
                 if (type == "create") {
                     this.$router.push({ path: "/markdown/create", query: this.$route.query })
                 }
+                if (type == "search") {
+                    this.$router.push({ path: "/markdown/search"})
+                }
             },
             showCreateDialog() {
                 this.dialogVisible = true
@@ -51,7 +57,11 @@
                 setTimeout(() => {
                     this.$refs.UrlList.getUrlList()
                 })
-            }
+            },
+            exit() {
+                localStorage.setItem("token" , "")
+                window.location.reload()
+            },
         }
     };
 </script>

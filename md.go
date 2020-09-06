@@ -141,6 +141,7 @@ func main() {
 	router.POST("/markdown/delete", DeleteMd)
 	router.POST("/markdown/recover", RecoverMd)
 	router.GET("/markdown/list", MdList)
+	router.GET("/markdown/search", SearchList)
 	router.GET("/markdown/urllist", UrlList)
 	router.GET("/markdown/classify", MdClassify)
 	router.GET("/markdown/detail", SingleMd)
@@ -340,6 +341,15 @@ func MdList(ctx *gin.Context) {
 	s := ctx.DefaultQuery("list_type", "ok")
 	c := ctx.DefaultQuery("classify", "全部")
 	list := database.ArticleList(s, c)
+
+	ctx.JSON(http.StatusOK, list)
+
+}
+
+func SearchList(ctx *gin.Context) {
+
+	c := ctx.DefaultQuery("keyword", "")
+	list := database.SearchList(c)
 
 	ctx.JSON(http.StatusOK, list)
 
