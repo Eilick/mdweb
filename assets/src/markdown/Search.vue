@@ -3,10 +3,10 @@
 
         <el-row style="margin-top:5vh;">
             <el-col :span="12" :offset="3">
-                <el-input v-model="keyword" @keyup.enter.native="getMdList" placeholder="请输入关键字查找" size="small" ></el-input>
+                <el-input v-model="keyword" @keyup.enter.native="getMdList" placeholder="请输入关键字查找"></el-input>
             </el-col>
              <el-col :span="4" :offset="1">
-                <el-button type="primary" size="small" @click="getMdList">搜索</el-button>
+                <el-button type="primary" @click="getMdList">搜索</el-button>
              </el-col>
 
         </el-row>
