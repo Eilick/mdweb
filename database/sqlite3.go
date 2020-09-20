@@ -294,7 +294,7 @@ func UrlList(listStatus string) []map[string]interface{} {
 	return list
 }
 
-func GetArticleClassify() []string {
+func GetArticleClassify(contentType string) []string {
 	tmpDb, err := sql.Open("sqlite3", GetDb())
 
 	if err != nil {
@@ -302,6 +302,10 @@ func GetArticleClassify() []string {
 	}
 
 	sqlStr := fmt.Sprintf("SELECT distinct classify FROM markdown where show_status=0")
+	if len(contentType) > 0 {
+		sqlStr = fmt.Sprintf("SELECT distinct classify FROM markdown where show_status=0 and content_type='%s'", contentType)
+	}
+
 	rows, err := tmpDb.Query(sqlStr)
 
 	if err != nil {

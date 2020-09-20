@@ -42,8 +42,10 @@ export default {
             list_type : listType,
         })
     },
-    getClassify: () => {
-        return request('get', '/markdown/classify')
+    getClassify: (c) => {
+        return request('get', '/markdown/classify', {
+            content_type : c
+        })
     },
     getImageList: () => {
         return request('get', '/markdown/images')

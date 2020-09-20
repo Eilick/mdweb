@@ -42,6 +42,12 @@
                                 :class="'title-' + scope.row.content_type">{{scope.row.title || "无"}}</span>
                         </template>
                     </el-table-column>
+                     <el-table-column fixed="right" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="text" icon="el-icon-edit" @click="edit(scope.row.id)">编辑
+                        </el-button>
+                    </template>
+                </el-table-column>
                 </el-table>
             </el-col>
         </el-row>
@@ -83,7 +89,10 @@
             },
             wiki() {
                 window.open("http://wiki.lianjia.com/dosearchsite.action?cql=siteSearch+~+\"" + this.keyword + "\"&queryString=" + this.keyword)
-            }
+            }, 
+            edit(id) {
+                this.$router.push("/markdown/edit/" + id)
+            },
         }
     };
 </script>

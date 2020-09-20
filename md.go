@@ -366,7 +366,7 @@ func UrlList(ctx *gin.Context) {
 
 func MdClassify(ctx *gin.Context) {
 
-	list := database.GetArticleClassify()
+	list := database.GetArticleClassify(ctx.DefaultQuery("content_type", ""))
 
 	ctx.JSON(http.StatusOK, list)
 

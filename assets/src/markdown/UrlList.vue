@@ -1,10 +1,16 @@
 <template>
     <el-row>
         <el-row v-for="(list, k) in groupList">
-            <el-divider :content-position="'left'"><strong>{{k}}</strong></el-divider>
+            <el-divider :content-position="'left'"><strong style="font-size: 18px">{{k}}</strong></el-divider>
             <template v-for="(item, inx) in groupList[k]">
-                <el-col :span="6" style="margin-bottom:20px;">
-                    <el-link :underline="true" :href="item.content" target="_blank" icon="el-icon-link" style="font-size: 15px;line-height: 18px"> {{item.title}}</el-link>
+                <el-col :span="6" style="margin-bottom: 20px">
+                     <el-avatar :size="40" shape="square" style="background: #718af5" @click="showEdit">
+                        <b style="font-size: 20px;">{{item.title.substring(0,1).toUpperCase()}}</b>
+                     </el-avatar>
+                     <span style="vertical-align: top;display: inline-block;height: 40px;margin-left: 10px;padding-top: 10px">
+                        <el-link :underline="true" :href="item.content" target="_blank" style="font-size: 15px;" > {{item.title}}</el-link>
+                     </span>
+                    
                 </el-col>
             </template>
         </el-row>
@@ -34,6 +40,9 @@
                 });
                 this.$forceUpdate()
             },
+            showEdit(item) {
+                alert(888)
+            }
         }
     };
 </script>

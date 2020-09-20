@@ -1,31 +1,14 @@
 <template>
     <el-row>
         <el-row style="margin-bottom: 20px;">
-            <el-col :span="12" :offset="6">
+            <el-col :span="12" :offset="4">
                 <el-input v-model="title" placeholder="请输入标题"></el-input>
             </el-col>
-
-        </el-row>
-        <el-row style="margin-bottom: 20px;">
-            <el-col align="center">
-                <el-radio-group v-model="classify" size="small">
-                    <template v-for="item in options">
-                        <el-radio :label="item"></el-radio>
-                    </template>
-                </el-radio-group>
-                <el-popover placement="right-end" width="250" v-model="visible">
-                    <el-row :gutter="10">
-                        <el-col :span="17">
-                            <el-input v-model="addClassify" placeholder="请输入分类" size="mini"></el-input>
-                        </el-col>
-                        <el-col :span="3">
-                            <el-button @click="createClassify" type="primary" size="mini">确认</el-button>
-                        </el-col>
-                    </el-row>
-                    <el-button slot="reference" size="small" style="margin-left: 40px;" type="text">
-                        添加分类
-                    </el-button>
-                </el-popover>
+             <el-col :span="3" :offset="1">
+                <el-select v-model="classify" filterable allow-create default-first-option placeholder="请选择文章分类"
+                    >
+                    <el-option v-for="item in options" :key="item" :label="item" :value="item"></el-option>
+                </el-select>
             </el-col>
         </el-row>
         <markdown ref="MD" @inputValue="setMdText"></markdown>

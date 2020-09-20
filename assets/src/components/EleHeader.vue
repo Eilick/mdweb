@@ -13,8 +13,10 @@
         <el-dialog title="新增书签" :visible.sync="dialogVisible" width="60%" :close-on-click-modal="false">
             <CreateUrl ref="CreateUrl" @update="hideCreateDialog" />
         </el-dialog>
-        <el-dialog title="书签" :visible.sync="showLink" width="65%" id="bookmark" >
-            <UrlList ref="UrlList" />
+        <el-dialog  :visible.sync="showLink" width="70%" id="bookmark" :fullscreen="true" :close-on-click-modal="false">
+            <el-row style="padding: 20px 100px">
+                <UrlList ref="UrlList" />
+            </el-row>
         </el-dialog>
     </el-row>
 </template>
@@ -28,10 +30,14 @@
             return {
                 dialogVisible: false,
                 showLink: false,
+                drawerHeight : "600px",
             }
         },
         components: {
             CreateUrl, UrlList
+        },
+        mounted() {
+            this.drawerHeight = (document.documentElement.clientHeight - 150) + 'px'
         },
         methods: {
             jump(type) {
